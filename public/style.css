@@ -1,0 +1,379 @@
+/* footer-area-start  */
+.App {
+    display: flex;
+    min-height: 100vh;
+    max-width: 100%;
+    width: 100%;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+}
+
+.App-header {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+}
+
+.jaXjyZ {
+    padding-top: 20px !important;
+}
+
+.App-container {
+    justify-content: center;
+    flex: 1 1 0%;
+    width: 100%;
+    max-width: 100%;
+}
+
+.App-footer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+}
+
+.footer-area {
+    width: 100%;
+    background: var(--box-bg);
+    padding: 50px;
+}
+
+.footer-nav {
+    text-align: center;
+}
+
+.footer-nav ul li {
+    display: inline-block;
+}
+
+.footer-nav ul li a {
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 16px;
+    text-align: center;
+    text-transform: capitalize;
+    color: var(--footer-text);
+    padding: 0 22px;
+    -moz-transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.line {
+    background: var(--footer-text);
+    max-width: 425px;
+    height: 1px;
+    display: block;
+    margin: 22px auto;
+    opacity: .5;
+}
+
+.social-list {
+    padding-bottom: 5px;
+}
+
+.social-list {
+    text-align: center;
+}
+
+.social-list ul li {
+    display: inline-block;
+}
+
+.social-list ul li a {
+    text-decoration: none;
+    color: var(--footer-text);
+    display: block;
+    padding: 5px 12px;
+    font-size: 16px;
+}
+
+
+.connect-wallet {
+    display: none;
+}
+
+.connect-wallet .show {
+    display: block;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width:100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-main {
+    position:fixed;
+    background: var(--box-bg);
+    width: 80%;
+    height: auto;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    margin: 0px 0px 2rem;
+    box-shadow: rgba(47, 128, 237, 0.05) 0px 4px 8px 0px;
+    padding: 0px;
+    width: 50vw;
+    overflow: hidden;
+    align-self: center;
+    max-width: 420px;
+    max-height: 90vh;
+    display: flex;
+    border-radius: 20px;
+}
+
+.close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 14px;
+}
+
+.wallet-title {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 1rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.wallets-modal {
+    background-color: rgb(250, 250, 255);
+    padding: 2rem;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+
+.modal-inner {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-none {
+    display: none;
+}
+
+.ljXtWJ[data-reach-dialog-content] {
+    margin: 0px 0px 2rem;
+    background: var(--box-bg);
+    box-shadow: rgba(47, 128, 237, 0.05) 0px 4px 8px 0px;
+    padding: 0px;
+    width: 50vw;
+    overflow: hidden;
+    align-self: center;
+    max-width: 420px;
+    max-height: 90vh;
+    display: flex;
+    border-radius: 20px;
+}
+
+.kjSopy {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+.xuOEC {
+    position: relative;
+}
+
+.iTaYul {
+    position: absolute;
+    right: 1rem;
+    top: 14px;
+}
+
+.bFQpTL {
+    background: var(--box-bg);
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 1rem;
+    font-weight: 500;
+    color: inherit;
+}
+
+.cRGnnt {
+    background: var(--box-bg);
+    padding: 2rem;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.kIebhI {
+    display: grid;
+    gap: 10px;
+}
+
+.fJOgmn {
+    background: var(--box-bg);
+    outline: currentcolor none medium;
+    border: 1px solid rgb(237, 238, 242);
+    border-radius: 12px;
+    width: 100% !important;
+    display: flex;
+    flex-direction: row;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: justify;
+    justify-content: space-between;
+    padding: 1rem;
+    margin-top: 0px;
+    opacity: 1;
+}
+
+.GeCum {
+    display: flex;
+    flex-flow: column nowrap;
+    -moz-box-pack: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.gJPfsC {
+    display: flex;
+    flex-flow: column nowrap;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: center;
+    justify-content: center;
+}
+
+.eDNUCi {
+    display: flex;
+    flex-flow: row nowrap;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.gJPfsC {
+    display: flex;
+    flex-flow: column nowrap;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: center;
+    justify-content: center;
+}
+
+/*
+====================================
+Medium Screen - Others
+====================================
+*/
+
+    
+    @media screen and (min-width: 992px) and (max-width: 1200px) {
+        .footer-nav ul li a {
+            font-size: 17px;
+        }
+    }
+    
+    /*
+    ====================================
+    Small Screen - Tablate
+    ====================================
+    */
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+
+        .header-title-1{
+            font-size: smaller;
+        }
+
+        .footer-area {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    
+        .footer-nav ul li a {
+            font-weight: 400;
+            font-size: 12px;
+            padding: 0 5px;
+        }
+        .social-list ul li a {
+            font-size: 16px;
+        }
+    }
+    
+    /*
+    ====================================
+    Small Screen - Mobile
+    ====================================
+    */
+    @media screen and (min-width: 576px) and (max-width: 767px) {
+
+        .header-title-1 {
+            font-size: 20px;
+        }
+
+        .copyright {
+            font-size: 12px;
+        }
+
+        .footer-area {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+        .footer-nav ul li a {
+            font-weight: 400;
+            font-size: 12px;
+            padding: 0 5px;
+        }
+        .social-list ul li a {
+            font-size: 16px;
+        }
+    }
+    
+    /*
+    ====================================
+    Xtra Small Screen - Small Mobile
+    ====================================
+    */
+    @media screen and (max-width: 576px) {
+
+        .modal-main {
+            max-width: 100%;
+            width: 90%
+        }
+
+        .ljXtWJ[data-reach-dialog-content] {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .header-title-1{
+            font-size: initial;
+        }
+
+        .copyright {
+            font-size: 10px;
+        }
+    
+        .footer-area {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    
+        .footer-nav ul li a {
+            font-weight: 400;
+            font-size: 12px;
+            padding: 0 5px;
+        }
+    
+        .social-list ul li a {
+            font-size: 16px;
+        }
+    }
