@@ -183,7 +183,7 @@ export default function initStaking({token, staking, liquidity, lp_symbol, rewar
         }
         
         refreshBalance = async () => {
-            let coinbase = await window.getCoinbase()
+            let coinbase = window.coinbase_address
             this.setState({coinbase})
             try {
                 let _bal = token.balanceOf(coinbase)

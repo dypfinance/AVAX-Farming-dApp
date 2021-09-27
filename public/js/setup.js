@@ -101,17 +101,17 @@ window.buyback_tokens = {
 	'0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7': {
 		symbol: 'WAVAX', decimals: 18
 	},
-	'0xf20d962a6c8f70c731bd838a3a388d7d48fa6e15': {
-		symbol: 'ETH', decimals: 18
+	'0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab': {
+		symbol: 'WETH.e', decimals: 18
 	},
-	'0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab': {
-		symbol: 'WBTC', decimals: 8
+	'0x50b7545627a5162f82a992c33b87adc75187b218': {
+		symbol: 'WBTC.e', decimals: 8
 	},
 	'0x60781c2586d68229fde47564546784ab3faca982': {
 		symbol: 'PNG', decimals: 18
 	},
-	'0xde3a24028580884448a5397872046a019649b084': {
-		symbol: 'USDT', decimals: 6
+	'0xc7198437980c041c805a1edcba50c1ce5db95118': {
+		symbol: 'USDT.e', decimals: 6
 	}
 }
 
