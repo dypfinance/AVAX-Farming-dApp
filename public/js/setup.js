@@ -112,6 +112,33 @@ window.buyback_tokens = {
 	},
 	'0xc7198437980c041c805a1edcba50c1ce5db95118': {
 		symbol: 'USDT.e', decimals: 6
+	},
+	'0x8729438eb15e2c8b576fcc6aecda6a148776c0f5': {
+		symbol: 'QI', decimals: 18
+	},
+	'0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664': {
+		symbol: 'USDC.e', decimals: 6
+	},
+	'0xd586e7f844cea2f87f50152665bcbc2c279d8d70': {
+		symbol: 'DAI.e', decimals: 18
+	},
+	'0xd1c3f94de7e5b45fa4edbba472491a9f4b166fc4': {
+		symbol: 'XAVA', decimals: 18
+	},
+	'0xe896cdeaac9615145c0ca09c8cd5c25bced6384c': {
+		symbol: 'PEFI', decimals: 18
+	},
+	'0x59414b3089ce2af0010e7523dea7e2b35d776ec7': {
+		symbol: 'YAK', decimals: 18
+	},
+	'0xc38f41a296a4493ff429f1238e030924a1542e50': {
+		symbol: 'SNOB', decimals: 18
+	},
+	'0x5947bb275c521040051d82396192181b413227a3': {
+		symbol: 'LINK.e', decimals: 18
+	},
+	'0x094bd7b2d99711a1486fb94d4395801c6d0fddcc': {
+		symbol: 'TEDDY', decimals: 18
 	}
 }
 
