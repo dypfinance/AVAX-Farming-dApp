@@ -2184,12 +2184,13 @@ async function getContract(key) {
 }
 
 function getCoinbase() {
-	if ( window.WALLET_TYPE == 'coin98' ) {
-		return window.coinbase_address.toLowerCase()
-	}
-	else{
-		return window.web3.eth.getCoinbase()
-	}
+	// if ( window.WALLET_TYPE == 'coin98' ) {
+	// 	return window.coinbase_address.toLowerCase()
+	// }
+	// else{
+	// 	return window.web3.eth.getCoinbase()
+	// }
+	return window.coinbase_address
 }
 
 

@@ -35,31 +35,31 @@ export default class StakingStats extends React.Component {
     }
 
     getDepositedLP = async (contractAddress) => {
-        let coinbase = await window.getCoinbase()
+        let coinbase = window.coinbase_address
         let contract = new window.web3.eth.Contract(window.STAKING_ABI, contractAddress)
         return (await contract.methods.depositedTokens(coinbase).call())
     }
 
     getClaimableTokens = async (contractAddress) => {
-        let coinbase = await window.getCoinbase()
+        let coinbase = window.coinbase_address
         let contract = new window.web3.eth.Contract(window.STAKING_ABI, contractAddress)
         return (await contract.methods.getPendingDivs(coinbase).call())
     }
 
     getClaimableWeth = async (contractAddress) => {
-        let coinbase = await window.getCoinbase()
+        let coinbase = window.coinbase_address
         let contract = new window.web3.eth.Contract(window.STAKING_ABI, contractAddress)
         return (await contract.methods.getPendingDivsEth(coinbase).call())
     }
 
     getTotalEarnedWeth = async (contractAddress) => {
-        let coinbase = await window.getCoinbase()
+        let coinbase = window.coinbase_address
         let contract = new window.web3.eth.Contract(window.STAKING_ABI, contractAddress)
         return (await contract.methods.totalEarnedEth(coinbase).call())
     }
 
     handleClaim = async (contractAddress) => {
-        let coinbase = await window.getCoinbase()
+        let coinbase = window.coinbase_address
         let contract = new window.web3.eth.Contract(window.STAKING_ABI, contractAddress)
         return (await contract.methods.claim().send({ from: coinbase, gasPrice: window.config.default_gasprice_gwei * 1e9, gas: window.config.default_gas_amount }))
     }
@@ -76,7 +76,8 @@ export default class StakingStats extends React.Component {
     }
 
     refreshPoolsInfo = () => {
-        window.getCoinbase().then(coinbase => this.setState({coinbase})).catch(console.error)
+        let coinbase = window.coinbase_address
+        this.setState({coinbase})
         window.LP_ID_LIST.forEach(async (lp_id) => {
             let contractAddress = lp_id.split('-')[1]
             let [depositedLp, claimableTokens, claimableEth, wethPaidOut, wethEarned] = await Promise.all([this.getDepositedLP(contractAddress), this.getClaimableTokens(contractAddress), this.getClaimableWeth(contractAddress), this.getWethPaidOut(contractAddress), this.getTotalEarnedWeth(contractAddress)])
