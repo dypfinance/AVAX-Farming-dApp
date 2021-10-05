@@ -387,11 +387,11 @@ export default function initStaking({ staking, apr, lock, expiration_time }) {
                                                             <b>NOTE:</b>
                                                         </div>
                                                         <div className='col-md-12 d-block text-muted small' style={{fontSize: '15px'}}>
-                                                            1. Before you deposit your funds, please make sure that you double-check the contract expiration date. At the end of a contract, you can withdraw your funds only after the expiration of your lock time. Consider a scenario wherein you deposit funds to a contract that expires in 30 days, but you lock the funds for 90 days; you will then be able to withdraw the funds 60 days after the expiration of the contract. Furthermore, you will not receive any rewards during this period.
+                                                            Deposit not available because the contract expires faster than the pool lock time.
                                                         </div>
                                                         <div className='col-md-12 d-block mb-0 text-muted small'
                                                              style={{fontSize: '15px'}}>
-                                                            2. New contracts with improved strategies will be released after the current one expires.
+                                                            New contracts with improved strategies are coming soon, waiting for security audit results.
                                                         </div>
                                                     </div>
                                                 }
