@@ -4,6 +4,9 @@ import { Route } from 'react-router-dom'
 
 import initStaking from './components/staking'
 import initBuybackStaking from './components/buy-back-staking'
+import initVesting from './components/vesting'
+import initVestingStaking from "./components/vesting-staking"
+
 import StakingList from './components/staking-list'
 import StakingListEth from './components/staking-list-eth.js'
 
@@ -28,6 +31,11 @@ const Staking3 = initStaking({token: window.token, staking: window.staking, liqu
 const Staking30 = initStaking({token: window.token_dyp_30, staking: window.staking_dyp_30, liquidity: wbnb_address, lp_symbol:'DYP/AVAX', reward: '45,000', lock: '30 Days', rebase_factor: rebase_factors[1], expiration_time: '2 January 2022'})
 const Staking60 = initStaking({token: window.token_dyp_60, staking: window.staking_dyp_60, liquidity: wbnb_address, lp_symbol:'DYP/AVAX', reward: '75,000', lock: '60 Days', rebase_factor: rebase_factors[2], expiration_time: '2 January 2022'})
 const Staking90 = initStaking({token: window.token_dyp_90, staking: window.staking_dyp_90, liquidity: wbnb_address, lp_symbol:'DYP/AVAX', reward: '100,000', lock: '90 Days', rebase_factor: rebase_factors[3], expiration_time: '2 January 2022'})
+
+
+const eth_address = 'ETH'
+const Vesting = initVesting({ staking: window.constant_staking_30, apr: 0, liquidity: eth_address, expiration_time: '16 February 2022' })
+const VestingStaking = initVestingStaking({ staking: window.constant_staking_60, apr: 0, liquidity: eth_address, expiration_time: '16 February 2022' })
 
 const Modal = ({ handleClose, show, children }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -269,6 +277,9 @@ render() {
       <Route exact path="/staking-avax-90" render={props => <Staking90 the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[3]} {...props} />} />
 
       <Route exact path='/staking-buyback' render={props => <BuybackStaking the_graph_result={this.state.the_graph_result} {...props} />} />
+
+      <Route exact path='/vesting' render={props => <Vesting the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/vesting-staking' render={props => <VestingStaking the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
       {/*<Route exact path='/' render={props => <StakingList tvl_all={getFormattedNumber(this.getCombinedTvlUsd(), 2)} tvl_farming={getFormattedNumber(this.getTvlFarming(), 2)} {...props} />} />*/}
       </div>
