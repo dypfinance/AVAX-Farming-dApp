@@ -453,11 +453,11 @@ export default function initVesting({ staking, buyers, apr, liquidity='ETH', loc
                                                             <b>NOTE:</b>
                                                         </div>
                                                         <div className='col-md-12 d-block text-muted small' style={{fontSize: '15px'}}>
-                                                            If you choose to claim, your tokens will be vested and released in three months, tokens can be claimed once every 24 hours.
+                                                            If you choose to claim, your tokens will be vested and released in { buyers ? 'three' : 'twelve' } months, tokens can be claimed once every 24 hours.
                                                         </div>
                                                         <div className='col-md-12 d-block mb-0 text-muted small'
                                                              style={{fontSize: '15px'}}>
-                                                            If you choose to stake, you will lock the tokens for a three-month period with 100% APR, that means you will earn 8.33% monthly.
+                                                            If you choose to stake, you will lock the tokens for a { buyers ? 'three-month' : 'twelve-month' } period with 100% APR, that means you will earn 8.33% monthly.
                                                         </div>
                                                     </div>
                                                 }
