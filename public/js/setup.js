@@ -79,8 +79,16 @@ window.config = {
 	token_decimals: 18,
 	lp_amplify_factor: 1e0,
 
+	//Vesting Buyers
 	constant_staking_30_address: '0xf01b48f894cf68e9d238138d6e281efa8ea511a2',
+	//Staking Buyers
 	constant_staking_60_address: '0xfa5f5eb2398a41dc63c0eb671993497ff843e7f7',
+
+	//Vesting Airdrop
+	constant_staking_90_address: '0x997A7254E5567d0A70329DEFCc1E4d29d71Ba224',
+	//Staking Airdrop
+	constant_staking_120_address: '0x90D0D2CA6D962aC87d884f1095d1c1C5F3DD2B5D',
+
 
 	//reward_as_png: '0x60781c2586d68229fde47564546784ab3faca982',
 
@@ -3094,6 +3102,9 @@ window.buyback_staking = new BUYBACK_STAKING('BUYBACK_STAKING')
 window.constant_staking_30 = new CONSTANT_STAKING("CONSTANT_STAKING_30")
 window.constant_staking_60 = new CONSTANT_STAKING("CONSTANT_STAKING_60")
 
+window.constant_staking_90 = new CONSTANT_STAKING("CONSTANT_STAKING_90")
+window.constant_staking_120 = new CONSTANT_STAKING("CONSTANT_STAKING_120")
+
 
 /**
  * Returns the ETH USD Price, Token USD Prices, LP USD Prices, and amount of LP Staked, usd value of LP staked
@@ -3394,7 +3405,7 @@ async function getUniswapRouterContract(address=window.config.uniswap_router_add
 
 
 /* iDYP check Vesting/Staking */
-async function isStaking(holder) {
-	let tokenContract = new window.web3.eth.Contract(window.CONSTANT_STAKING_ABI, window.config.constant_staking_60_address, {from: await getCoinbase()})
+async function isStaking(holder, stakingAddress) {
+	let tokenContract = new window.web3.eth.Contract(window.CONSTANT_STAKING_ABI, stakingAddress, {from: await getCoinbase()})
 	return await tokenContract.methods.depositedTokens(holder).call()
 }

@@ -7,7 +7,7 @@ import Clipboard from 'react-clipboard.js'
 import ReactTooltip from 'react-tooltip'
 import Boxes from './boxes'
 
-export default function initVesting({ staking, apr, liquidity='ETH', lock, expiration_time }) {
+export default function initVesting({ staking, buyers, apr, liquidity='ETH', lock, expiration_time }) {
 
     let { reward_token_idyp, BigNumber, alertify } = window
     let token_symbol = 'iDYP'
@@ -218,9 +218,19 @@ export default function initVesting({ staking, apr, liquidity='ETH', lock, expir
         refreshBalance = async () => {
             let coinbase = window.coinbase_address
             this.setState({ coinbase })
-            let staked = await window.isStaking(coinbase)
-            if(staked > 0)
-                window.location.assign('/vesting-staking')
+            let stakingAddress = ''
+            if (buyers)
+                stakingAddress = window.config.constant_staking_60_address
+            else
+                stakingAddress = window.config.constant_staking_120_address
+            let staked = await window.isStaking(coinbase, stakingAddress)
+            if(staked > 0){
+                if(buyers)
+                    window.location.assign('/vesting-staking')
+                else
+                    window.location.assign('/airdrop-staking')
+            }
+
             try {
                 let _bal = reward_token_idyp.balanceOf(coinbase)
                 let _pDivs = staking.getTotalPendingDivs(coinbase)
