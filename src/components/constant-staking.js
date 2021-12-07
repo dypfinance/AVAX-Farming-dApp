@@ -5,10 +5,11 @@ import getFormattedNumber from '../functions/get-formatted-number'
 import Address from './address'
 import Clipboard from 'react-clipboard.js'
 import ReactTooltip from 'react-tooltip'
+import Boxes from './boxes'
 
-export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
+export default function initStaking({ staking, apr, liquidity='ETH', lock, expiration_time }) {
 
-    let { reward_token, BigNumber, alertify } = window
+    let { reward_token, BigNumber, alertify, reward_token_idyp } = window
     let token_symbol = 'DYP'
 
     // token, staking
@@ -79,7 +80,12 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
                 approxDeposit: 100 ,
                 approxDays: 365,
 
-                usdPerToken: ''
+                usdPerToken: '',
+
+                contractDeployTime: '',
+                disburseDuration: '',
+
+                apy: 0
 
             }
         }
@@ -120,6 +126,13 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
         componentDidMount() {
             this.refreshBalance()
             window._refreshBalInterval = setInterval(this.refreshBalance, 3000)
+
+            this.getPriceDYP()
+        }
+
+        getPriceDYP = async () => {
+            let usdPerToken = await window.getPrice('defi-yield-protocol')
+            this.setState({usdPerToken})
         }
 
         componentWillUnmount() {
@@ -139,7 +152,24 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
             amount = new BigNumber(amount).times(1e18).toFixed(0)
             reward_token.approve(staking._address, amount)
         }
-        handleStake = (e) => {
+        // handleStake = (e) => {
+        //     let amount = this.state.depositAmount
+        //     amount = new BigNumber(amount).times(1e18).toFixed(0)
+        //     let referrer = this.props.referrer
+        //
+        //     if (referrer) {
+        //         referrer = String(referrer).trim().toLowerCase()
+        //     }
+        //
+        //     if (!window.web3.utils.isAddress(referrer)) {
+        //         referrer = window.config.ZERO_ADDRESS
+        //     }
+        //     staking.stake(amount, referrer)
+        // }
+
+        handleStake = async (e) => {
+            e.preventDefault()
+
             let amount = this.state.depositAmount
             amount = new BigNumber(amount).times(1e18).toFixed(0)
             let referrer = this.props.referrer
@@ -151,19 +181,62 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
             if (!window.web3.utils.isAddress(referrer)) {
                 referrer = window.config.ZERO_ADDRESS
             }
-            staking.stake(amount, referrer)
+
+            let referralFee = new BigNumber(amount).times(500).div(1e4).toFixed(0)
+            //console.log({referralFee})
+            //let selectedBuybackToken = this.state.selectedBuybackToken
+
+            let deadline = Math.floor(Date.now()/1e3 + window.config.tx_max_wait_seconds)
+            let router = await window.getPangolinRouterContract()
+            let WETH = await router.methods.WAVAX().call()
+            let platformTokenAddress = window.config.reward_token_address
+            let rewardTokenAddress = window.config.reward_token_idyp_address
+            let path = [...new Set([rewardTokenAddress, WETH, platformTokenAddress].map(a => a.toLowerCase()))]
+            let _amountOutMin_referralFee = await router.methods.getAmountsOut(referralFee, path).call()
+            //console.log({_amountOutMin_referralFee})
+            _amountOutMin_referralFee = _amountOutMin_referralFee[_amountOutMin_referralFee.length - 1]
+            _amountOutMin_referralFee = new BigNumber(_amountOutMin_referralFee).times(100 - window.config.slippage_tolerance_percent).div(100).toFixed(0)
+            referralFee = referralFee - _amountOutMin_referralFee
+            referralFee = referralFee.toString()
+
+            console.log({amount, referrer, referralFee, deadline})
+
+            staking.stake(amount, referrer, 0, deadline)
         }
 
-        handleWithdraw = (e) => {
+        handleWithdraw = async (e) => {
             e.preventDefault()
             let amount = this.state.withdrawAmount
             amount = new BigNumber(amount).times(1e18).toFixed(0)
-            staking.unstake(amount)
+
+            let deadline = Math.floor(Date.now()/1e3 + window.config.tx_max_wait_seconds)
+
+            staking.unstake(amount, 0, deadline)
         }
 
-        handleClaimDivs = (e) => {
+        handleClaimDivs = async (e) => {
             e.preventDefault()
-            staking.claim()
+
+            let address = this.state.coinbase
+            let amount = await staking.getTotalPendingDivs(address)
+
+            let router = await window.getPangolinRouterContract()
+            let WETH = await router.methods.WAVAX().call()
+            let platformTokenAddress = window.config.reward_token_address
+            let rewardTokenAddress = window.config.reward_token_idyp_address
+            let path = [...new Set([rewardTokenAddress, WETH, platformTokenAddress].map(a => a.toLowerCase()))]
+            let _amountOutMin = await router.methods.getAmountsOut(amount, path).call()
+            _amountOutMin = _amountOutMin[_amountOutMin.length - 1]
+            _amountOutMin = new BigNumber(_amountOutMin).times(100 - window.config.slippage_tolerance_percent).div(100).toFixed(0)
+
+            let referralFee = new BigNumber(_amountOutMin).times(500).div(1e4).toFixed(0)
+            referralFee = referralFee.toString()
+
+            let deadline = Math.floor(Date.now()/1e3 + window.config.tx_max_wait_seconds)
+
+            console.log({referralFee, _amountOutMin, deadline})
+
+            staking.claim(0, _amountOutMin, deadline)
         }
 
         handleSetMaxDeposit = (e) => {
@@ -182,7 +255,29 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
         refreshBalance = async () => {
             let coinbase = window.coinbase_address
             this.setState({ coinbase })
+
+            let lp_data = this.props.the_graph_result.token_data
+            //console.log({lp_data})
+
+            //Calculate APY
+            let { the_graph_result } = this.props
+            let usd_per_token = the_graph_result.token_data ? the_graph_result.token_data["0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17"].token_price_usd : 1
+            let usd_per_idyp = the_graph_result.token_data ? the_graph_result.token_data["0xbd100d061e120b2c67a24453cf6368e63f1be056"].token_price_usd : 1
+            let apy = new BigNumber(apr).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
+
+            this.setState({apy})
+
             try {
+                let amount = new BigNumber(1000000000000000000).toFixed(0)
+                let router = await window.getPangolinRouterContract()
+                let WETH = await router.methods.WAVAX().call()
+                let platformTokenAddress = window.config.USDCe_address
+                let rewardTokenAddress = window.config.reward_token_idyp_address
+                let path = [...new Set([rewardTokenAddress, WETH, platformTokenAddress].map(a => a.toLowerCase()))]
+                let _amountOutMin = await router.methods.getAmountsOut(amount, path).call()
+                _amountOutMin = _amountOutMin[_amountOutMin.length - 1]
+                _amountOutMin = new BigNumber(_amountOutMin).div(1e6).toFixed(18)
+
                 let _bal = reward_token.balanceOf(coinbase)
                 let _pDivs = staking.getTotalPendingDivs(coinbase)
                 let _tEarned = staking.totalEarnedTokens(coinbase)
@@ -192,10 +287,21 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
                 let _tvl = reward_token.balanceOf(staking._address)
                 let _rFeeEarned = staking.totalReferralFeeEarned(coinbase)
                 let tStakers = staking.getNumberOfHolders()
+
+                //Take iDYP Balance on Staking
+                let _tvlConstantiDYP = reward_token_idyp.balanceOf(staking._address) /* TVL of iDYP on Staking */
+
                 let [token_balance, pendingDivs, totalEarnedTokens, stakingTime,
                     depositedTokens, lastClaimedTime, tvl,
-                    referralFeeEarned, total_stakers
-                ] = await Promise.all([_bal, _pDivs, _tEarned, _stakingTime, _dTokens, _lClaimTime, _tvl, _rFeeEarned, tStakers])
+                    referralFeeEarned, total_stakers, tvlConstantiDYP
+                ] = await Promise.all([_bal, _pDivs, _tEarned, _stakingTime, _dTokens, _lClaimTime, _tvl, _rFeeEarned, tStakers, _tvlConstantiDYP])
+
+                //console.log({tvl, tvlConstantiDYP, _amountOutMin})
+
+                let usdValueiDYP = new BigNumber(tvlConstantiDYP).times(_amountOutMin).toFixed(18)
+                let usd_per_lp = lp_data ? lp_data[window.reward_token["_address"]].token_price_usd : 0
+                let tvlUSD = new BigNumber(tvl).times(usd_per_lp).plus(usdValueiDYP).toFixed(18)
+                //console.log({tvlUSD})
 
                 this.setState({
                     token_balance,
@@ -207,6 +313,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
                     tvl,
                     referralFeeEarned,
                     total_stakers,
+                    tvlUSD
                 })
                 let stakingOwner = await staking.owner()
                 this.setState({ stakingOwner })
@@ -219,8 +326,13 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
                 this.setState({ cliffTime: Number(cliffTime) })
             }).catch(console.error)
 
-            let usdPerToken = await window.getPrice('defi-yield-protocol')
-            this.setState({usdPerToken})
+            staking.contractStartTime().then(contractDeployTime => {
+                this.setState({ contractDeployTime })
+            })
+
+            staking.REWARD_INTERVAL().then(disburseDuration => {
+                this.setState({ disburseDuration })
+            })
 
         }
 
@@ -229,32 +341,57 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
         }
 
         getApproxReturn = () => {
-            let APY = this.getAPY()
             let approxDays = this.state.approxDays
             let approxDeposit = this.state.approxDeposit
 
-            return ( approxDeposit * APY / 100 / 365 * approxDays)
+            return ( approxDeposit * this.state.apy / 100 / 365 * approxDays)
         }
 
         getReferralLink = () => {
             return window.location.origin + window.location.pathname + '?r=' + this.state.coinbase
         }
 
-        handleReinvest = (e) => {
+        handleReinvest = async (e) => {
             e.preventDefault()
-            staking.reInvest()
+
+            let address = this.state.coinbase
+            let amount = await staking.getTotalPendingDivs(address)
+
+            let router = await window.getPangolinRouterContract()
+            let WETH = await router.methods.WAVAX().call()
+            let platformTokenAddress = window.config.reward_token_address
+            let rewardTokenAddress = window.config.reward_token_idyp_address
+            let path = [...new Set([rewardTokenAddress, WETH, platformTokenAddress].map(a => a.toLowerCase()))]
+            let _amountOutMin = await router.methods.getAmountsOut(amount, path).call()
+            _amountOutMin = _amountOutMin[_amountOutMin.length - 1]
+            _amountOutMin = new BigNumber(_amountOutMin).times(100 - window.config.slippage_tolerance_percent).div(100).toFixed(0)
+
+            let referralFee = new BigNumber(_amountOutMin).times(500).div(1e4).toFixed(0)
+            referralFee = referralFee.toString()
+
+            // _amountOutMin = _amountOutMin - referralFee
+            // _amountOutMin = _amountOutMin.toString()
+
+            let deadline = Math.floor(Date.now()/1e3 + window.config.tx_max_wait_seconds)
+
+            console.log({referralFee, _amountOutMin, deadline})
+
+            staking.reInvest(0, _amountOutMin, deadline)
         }
 
         render() {
 
-            let { cliffTime, referralFeeEarned, token_balance, pendingDivs, totalEarnedTokens, depositedTokens, stakingTime, coinbase, tvl } = this.state
-
+            let {disburseDuration, contractDeployTime, cliffTime, referralFeeEarned, token_balance, pendingDivs, totalEarnedTokens, depositedTokens, stakingTime, coinbase, tvl } = this.state
 
             token_balance = new BigNumber(token_balance ).div(1e18).toString(10)
             token_balance = getFormattedNumber(token_balance, 6)
 
+            let { the_graph_result } = this.props
 
-            pendingDivs = new BigNumber(pendingDivs).div(10 ** TOKEN_DECIMALS).toString(10)
+            let usd_per_token = the_graph_result.token_data ? the_graph_result.token_data["0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17"].token_price_usd : 1
+            let usd_per_idyp = the_graph_result.token_data ? the_graph_result.token_data["0xbd100d061e120b2c67a24453cf6368e63f1be056"].token_price_usd : 1
+
+            pendingDivs = new BigNumber(pendingDivs).div(10 ** TOKEN_DECIMALS).times(usd_per_idyp).div(usd_per_token).toString(10)
             pendingDivs = getFormattedNumber(pendingDivs, 6)
 
             totalEarnedTokens = new BigNumber(totalEarnedTokens).div(10 ** TOKEN_DECIMALS).toString(10)
@@ -270,6 +407,20 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
 
             stakingTime = stakingTime * 1e3
             cliffTime = cliffTime * 1e3
+
+            let showDeposit = true
+
+            if (!isNaN(disburseDuration) && !isNaN(contractDeployTime)){
+                let lastDay = parseInt(disburseDuration) + parseInt(contractDeployTime)
+                let lockTimeExpire = parseInt(Date.now()) + parseInt(cliffTime)
+                lockTimeExpire = lockTimeExpire.toString().substr(0,10)
+                //console.log("now " + lockTimeExpire)
+                //console.log('last ' + lastDay)
+                if (lockTimeExpire > lastDay) {
+                    showDeposit = false
+                }
+            }
+
             let cliffTimeInWords = 'lockup period'
 
             let canWithdraw = true
@@ -281,7 +432,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
             }
 
             let total_stakers = this.state.total_stakers
-            let tvl_usd = this.state.tvl / 1e18 * this.state.usdPerToken
+            //let tvl_usd = this.state.tvl / 1e18 * this.state.usdPerToken
+            let tvl_usd = this.state.tvlUSD / 1e18
 
             tvl_usd = getFormattedNumber(tvl_usd, 2)
             total_stakers = getFormattedNumber(total_stakers, 0)
@@ -292,220 +444,253 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
 
             let id = Math.random().toString(36)
 
+
+            // let apy = new BigNumber(apr).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
+
+            //this.setState({apy})
+
             return (<div>
-                    <div style={{ background: 'white' }}>
-                        <div className="container mr-0 ml-0" style={{ maxWidth: '100%' }}>
-                            <div className="row">
-                                <div className="col-md-7 mt-3 mb-3 logo-column header-logo col-5">
-                                    <h2 className='container text-left' style={{ position: 'relative', maxWidth: '100%', marginLeft: '-10px' }}>
-                                        <a href='https://dyp.finance/#/earn' style={{ display: 'flex' }}>
-                                            <img style={{ position: 'relative', maxWidth: '90%', objectFit: 'contain', paddingRight: '10px', height: '100px' }} alt='Staking DAPP' src='/logo192.png'
-                                                 height='125' />
-                                            {' '}<p className="header-title-1" style={{ paddingLeft: '10px', marginBottom: '1rem', marginTop: 'revert' }}>DYP Farming dApp</p>
-                                        </a>
-                                    </h2>
-                                </div>
-                                <div className="col-md-5 mt-3 mb-3 pr-0 pl-0 col-7" id="infoPool">
-                                    <div className="apr-info" style={{ maxWidth: '300px', minWidth: '260px', float: 'right', paddingRight: '20px' }}>
-                                        <div className="mt-3 mb-3 apr-info-child" style={{ textAlign: 'justify' }} >
-                                            <p className="mb-0"><span
-                                                className="text-bold purple-text">{token_symbol} Fixed Staking</span> <span style={{ float: 'right' }}><i
-                                                className="orange-text"></i></span></p>
-                                            <p className="mb-0"><span
-                                                className="text-bold purple-text" style={{ paddingRight: '4px' }}>APR: </span> <span>{' '} {apr.toFixed(2)}%</span></p>
-                                            <p className="mb-0"><span
-                                                className="text-bold purple-text">Minimum Lock Time: </span><span>{ cliffTime > 0 && moment.duration(this.state.cliffTime*1e3).humanize()}<i
-                                                className="orange-text"></i></span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div className='container'>
                         <div className='token-staking mt-5'>
                             <div className='row'>
                                 <div className='col-lg-6'>
                                     <div className='row token-staking-form'>
                                         <div className='col-12'>
-                                            <form onSubmit={e => e.preventDefault()}>
-                                                <div className='form-group'>
-                                                    <div className='row'>
-                                                        <label htmlFor='deposit-amount' className='col-md-8 d-block text-left'>STAKE</label>
-                                                        <div className='col-4'>
-                                                            <a target='_blank' rel='noopener noreferrer' href={`https://app.uniswap.org/#/swap?inputCurrency=${liquidity}&outputCurrency=0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17`} >
-                                                                <button className='btn btn-sm btn-block btn-primary ' type='button'>
-                                                                    GET DYP
+                                            <div className='l-box'>
+                                                {showDeposit == true ?
+                                                    <form onSubmit={e => e.preventDefault()}>
+                                                        <div className='form-group'>
+                                                            <div className='row'>
+                                                                <label htmlFor='deposit-amount'
+                                                                       className='col-md-8 d-block text-left'>DEPOSIT</label>
+                                                                <div className='col-4'>
+                                                                    <a target='_blank' rel='noopener noreferrer'
+                                                                       href={`https://app.pangolin.exchange/#/swap?inputCurrency=${liquidity}&outputCurrency=0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17`}>
+                                                                        <button
+                                                                            className='btn btn-sm btn-block btn-primary l-outline-btn'
+                                                                            type='button'>
+                                                                            GET DYP
+                                                                        </button>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div className='input-group '>
+                                                                <input
+                                                                    value={Number(this.state.depositAmount) > 0 ? this.state.depositAmount : this.state.depositAmount}
+                                                                    onChange={e => this.setState({depositAmount: e.target.value})}
+                                                                    className='form-control left-radius' placeholder='0'
+                                                                    type='text'/>
+                                                                <div className='input-group-append'>
+                                                                    <button
+                                                                        className='btn  btn-primary right-radius btn-max l-light-btn'
+                                                                        style={{cursor: 'pointer'}}
+                                                                        onClick={this.handleSetMaxDeposit}>
+                                                                        MAX
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='row'>
+                                                            <div style={{paddingRight: '0.3rem'}} className='col-6'>
+                                                                <button onClick={this.handleApprove}
+                                                                        className='btn  btn-block btn-primary '
+                                                                        type='button'>
+                                                                    APPROVE
                                                                 </button>
-                                                            </a>
+                                                            </div>
+                                                            <div style={{paddingLeft: '0.3rem'}} className='col-6'>
+                                                                <button onClick={this.handleStake}
+                                                                        className='btn  btn-block btn-primary l-outline-btn'
+                                                                        type='submit'>
+                                                                    DEPOSIT
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className='input-group input-group-lg'>
-                                                        <input value={Number(this.state.depositAmount) > 0 ? this.state.depositAmount  : this.state.depositAmount} onChange={e => this.setState({ depositAmount: e.target.value })} className='form-control left-radius' placeholder='0' type='text' />
-                                                        <div className='input-group-append'>
-                                                            <button className='btn btn-lg btn-primary right-radius btn-max' style={{ cursor: 'pointer' }} onClick={this.handleSetMaxDeposit}>
-                                                                MAX
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className='row'>
-                                                    <div style={{ paddingRight: '0.3rem' }} className='col-6'>
-                                                        <button onClick={this.handleApprove} className='btn btn-lg btn-block btn-primary ' type='button'>
-                                                            APPROVE
-                                                        </button>
-                                                    </div>
-                                                    <div style={{ paddingLeft: '0.3rem' }} className='col-6'>
-                                                        <button onClick={this.handleStake} className='btn btn-lg btn-block btn-primary ' type='submit'>
-                                                            STAKE
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <p style={{ fontSize: '.8rem' }} className='mt-1 text-center mb-0'>
-                                                    {/* Some info text here.<br /> */}
-                                                    Please approve before staking. 0% fee for staking.
-                                                </p>
+                                                        <p style={{fontSize: '.8rem'}}
+                                                           className='mt-1 text-center mb-0 text-muted mt-3'>
+                                                            {/* Some info text here.<br /> */}
+                                                            Please approve before staking. 0% fee for deposit.
+                                                        </p>
 
-                                            </form>
-                                        </div>
-                                        <div className='col-12'>
-                                            <form onSubmit={this.handleWithdraw}>
-                                                <div className='form-group'>
-                                                    <label htmlFor='deposit-amount' className='d-block text-left'>UNSTAKE</label>
-                                                    <div className='input-group input-group-lg'>
-                                                        <input value={this.state.withdrawAmount} onChange={e => this.setState({ withdrawAmount:e.target.value })} className='form-control left-radius' placeholder='0' type='text' />
-                                                        <div className='input-group-append'>
-                                                            <button className='btn btn-lg btn-primary right-radius btn-max' style={{ cursor: 'pointer' }} onClick={this.handleSetMaxWithdraw}>
-                                                                MAX
-                                                            </button>
+                                                    </form>
+                                                    :
+                                                    <div className='row'>
+                                                        <div className='col-md-12 d-block text-muted small'
+                                                             style={{fontSize: '15px'}}>
+                                                            <b>NOTE:</b>
+                                                        </div>
+                                                        <div className='col-md-12 d-block text-muted small' style={{fontSize: '15px'}}>
+                                                            Deposit not available because the contract expires faster than the pool lock time.
+                                                        </div>
+                                                        <div className='col-md-12 d-block mb-0 text-muted small'
+                                                             style={{fontSize: '15px'}}>
+                                                            New contracts with improved strategies are coming soon, waiting for security audit results.
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <button title={canWithdraw ? '' : `You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn btn-lg btn-primary btn-block ' type='submit'>
-                                                    UNSTAKE
-                                                </button>
-                                                <p style={{fontSize: '.8rem'}} className='mt-1 text-center'>0.25% fee for unstaking</p>
-                                            </form>
+                                                }
+                                            </div>
                                         </div>
                                         <div className='col-12'>
-                                            <form onSubmit={this.handleClaimDivs}>
-                                                <div className='form-group'>
-                                                    <label htmlFor='deposit-amount' className='text-left d-block'>REWARDS</label>
-                                                    <div className='form-row'>
-                                                        {/* <div className='col-md-6'>
+                                            <div className='l-box'>
+                                                <form onSubmit={this.handleWithdraw}>
+                                                    <div className='form-group'>
+                                                        <label htmlFor='deposit-amount' className='d-block text-left'>WITHDRAW</label>
+                                                        <div className='input-group '>
+                                                            <input value={this.state.withdrawAmount} onChange={e => this.setState({ withdrawAmount:e.target.value })} className='form-control left-radius' placeholder='0' type='text' />
+                                                            <div className='input-group-append'>
+                                                                <button className='btn  btn-primary right-radius btn-max l-light-btn' style={{ cursor: 'pointer' }} onClick={this.handleSetMaxWithdraw}>
+                                                                    MAX
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button title={canWithdraw ? '' : `You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
+                                                        WITHDRAW
+                                                    </button>
+                                                    <p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted mt-3'>0% fee for withdraw</p>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div className='col-12'>
+                                            <div className='l-box'>
+                                                <form onSubmit={this.handleClaimDivs}>
+                                                    <div className='form-group'>
+                                                        <label htmlFor='deposit-amount' className='text-left d-block'>REWARDS</label>
+                                                        <div className='form-row'>
+                                                            {/* <div className='col-md-6'>
                                                         <p className='form-control  text-right' style={{ border: 'none', marginBottom: 0, paddingLeft: 0, background: 'transparent', color: '#222' }}><span style={{ fontSize: '1.2rem', color: 'rgb(255, 0, 122)' }}>{pendingDivsEth}</span> <small className='text-bold'>WETH</small></p>
                                                     </div> */}
-                                                        <div className='col-md-12'>
-                                                            <p className='form-control  text-right' style={{ border: 'none', marginBottom: 0, paddingLeft: 0, background: 'transparent', color: '#222' }}><span style={{ fontSize: '1.2rem', color: 'rgb(255, 0, 122)' }}>{pendingDivs}</span> <small className='text-bold'>DYP</small></p>
+                                                            <div className='col-md-12'>
+                                                                <p className='form-control  text-right' style={{ border: 'none', marginBottom: 0, paddingLeft: 0, background: 'transparent', color: 'var(--text-color)' }}><span style={{ fontSize: '1.2rem', color: 'var(--text-color)' }}>{pendingDivs}</span> <small className='text-bold'>DYP</small></p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className='form-row'>
-                                                    <div className='col-md-6 mb-2'>
-                                                        <button className='btn btn-lg btn-primary btn-block ' type='submit'>
-                                                            CLAIM
-                                                        </button>
+                                                    <div className='form-row'>
+                                                        <div className='col-md-6 mb-2'>
+                                                            <button className='btn  btn-primary btn-block ' type='submit'>
+                                                                CLAIM
+                                                            </button>
+                                                        </div>
+                                                        <div className='col-md-6 mb-2'>
+                                                            <button className='btn  btn-primary btn-block l-outline-btn' type='button' onClick={this.handleReinvest}>
+                                                                REINVEST
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className='col-md-6 mb-2'>
-                                                        <button className='btn btn-lg btn-primary btn-block' type='button' onClick={this.handleReinvest}>
-                                                            REINVEST
-                                                        </button>
-                                                    </div>
-                                                </div>
 
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                         <div className='col-12'>
-                                            <form onSubmit={(e) => e.preventDefault()}>
-                                                <div className='form-group'>
-                                                    <label htmlFor='deposit-amount' className='d-block text-left'>RETURN CALCULATOR</label>
-                                                    <div className='row'>
-                                                        <div className='col'>
-                                                            <label style={{ fontSize: '1rem', fontWeight: 'normal' }}>DYP to Deposit</label>
-                                                            <input className='form-control form-control-lg' value={ this.state.approxDeposit} onChange={e => this.setState({ approxDeposit: e.target.value })} placeholder='0' type='text' />
-                                                        </div>
-                                                        <div className='col'>
-                                                            <label style={{ fontSize: '1rem', fontWeight: 'normal' }}>Days</label>
-                                                            <input className='form-control form-control-lg' value={this.state.approxDays} onChange={e => this.setState({ approxDays: e.target.value })} />
+                                            <div className='l-box'>
+                                                <form onSubmit={(e) => e.preventDefault()}>
+                                                    <div className='form-group'>
+                                                        <label htmlFor='deposit-amount' className='d-block text-left'>RETURN CALCULATOR</label>
+                                                        <div className='row'>
+                                                            <div className='col'>
+                                                                <label style={{ fontSize: '1rem', fontWeight: 'normal' }}>DYP to Deposit</label>
+                                                                <input className='form-control ' value={ this.state.approxDeposit} onChange={e => this.setState({ approxDeposit: e.target.value })} placeholder='0' type='text' />
+                                                            </div>
+                                                            <div className='col'>
+                                                                <label style={{ fontSize: '1rem', fontWeight: 'normal' }}>Days</label>
+                                                                <input className='form-control ' value={this.state.approxDays} onChange={e => this.setState({ approxDays: e.target.value })} type='text' />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <p>
-                                                    Approx. {getFormattedNumber(this.getApproxReturn(), 6)} DYP
-                                                </p>
-                                                {/*<p style={{ fontSize: '.8rem' }} className='mt-1 text-center'>Approx. Value Not Considering Staking / Unstakig Fees.</p>*/}
-                                            </form>
+                                                    <p>
+                                                        Approx. {getFormattedNumber(this.getApproxReturn(), 6)} DYP
+                                                    </p>
+                                                    {/*<p style={{ fontSize: '.8rem' }} className='mt-1 text-center'>Approx. Value Not Considering Staking / Unstakig Fees.</p>*/}
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className='col-lg-6'>
-                                    <div className='table-responsive-'>
-                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 'bold', padding: '.3rem' }}>STATS</h3>
-                                        <table className='table-stats table table-sm table-borderless'>
-                                            <tbody>
-                                            <tr>
-                                                <th>My Address</th>
-                                                <td className='text-right'>
-                                                    <Address style={{ fontFamily: 'monospace' }} a={coinbase} />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Contract Address</th>
-                                                <td className='text-right'>
-                                                    <Address style={{ fontFamily: 'monospace' }} a={staking._address} />
-                                                </td>
-                                            </tr>
+                                    <Boxes items={[
+                                        {
+                                            title: 'TVL USD',
+                                            number: '$'+tvl_usd
+                                        },
+                                        {
+                                            title: `APY`,
+                                            number: getFormattedNumber(this.state.apy, 2)+'%'
+                                        }
+                                    ]} />
+                                    <div className='l-box'>
+                                        <div className='table-responsive'>
+                                            <h3 style={{ fontSize: '1.1rem', fontWeight: '600', padding: '.3rem' }}>STATS</h3>
+                                            <table className='table-stats table table-sm table-borderless'>
+                                                <tbody>
+                                                <tr>
+                                                    <th>My Address</th>
+                                                    <td className='text-right'>
+                                                        <Address style={{ fontFamily: 'monospace' }} a={coinbase} />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Contract Address</th>
+                                                    <td className='text-right'>
+                                                        <Address style={{ fontFamily: 'monospace' }} a={staking._address} />
+                                                    </td>
+                                                </tr>
 
-                                            <tr>
-                                                <th>My DYP Balance</th>
-                                                <td className="text-right"><strong>{token_balance}</strong> <small>{token_symbol}</small></td>
-                                            </tr>
+                                                <tr>
+                                                    <th>Contract Expiration</th>
+                                                    <td className="text-right"><strong>{expiration_time}</strong></td>
+                                                </tr>
 
-                                            <tr>
-                                                <th>MY DYP Staked</th>
-                                                <td className="text-right"><strong>{depositedTokens}</strong> <small>{token_symbol}</small></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Total DYP Locked</th>
-                                                <td className="text-right"><strong>{tvl}</strong> <small>{token_symbol}</small></td>
-                                            </tr>
+                                                <tr>
+                                                    <th>My DYP Balance</th>
+                                                    <td className="text-right"><strong>{token_balance}</strong> <small>{token_symbol}</small></td>
+                                                </tr>
 
-                                            <tr>
-                                                <th>Total Earned DYP</th>
-                                                <td className="text-right"><strong>{totalEarnedTokens}</strong> <small>DYP</small></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Referral Fee Earned</th>
-                                                <td className="text-right"><strong>{referralFeeEarned}</strong> <small>DYP</small></td>
-                                            </tr>
-                                            <tr>
-                                                <th>TVL USD</th>
-                                                <td className="text-right"><strong>${tvl_usd}</strong> <small>USD</small></td>
-                                            </tr>
-                                            {/* <tr>
+                                                <tr>
+                                                    <th>MY DYP Deposit</th>
+                                                    <td className="text-right"><strong>{depositedTokens}</strong> <small>{token_symbol}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Total DYP Locked</th>
+                                                    <td className="text-right"><strong>{tvl}</strong> <small>{token_symbol}</small></td>
+                                                </tr>
+
+                                                {/*<tr>*/}
+                                                {/*    <th>Total Earned DYP</th>*/}
+                                                {/*    <td className="text-right"><strong>{totalEarnedTokens}</strong> <small>DYP</small></td>*/}
+                                                {/*</tr>*/}
+                                                <tr>
+                                                    <th>Referral Fee Earned</th>
+                                                    <td className="text-right"><strong>{referralFeeEarned}</strong> <small>DYP</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>TVL USD</th>
+                                                    <td className="text-right"><strong>${tvl_usd}</strong> <small>USD</small></td>
+                                                </tr>
+                                                {/* <tr>
                                                <th>Total Stakers</th>
                                                <td className="text-right"><strong>{total_stakers}</strong> <small></small></td>
                                             </tr> */}
-                                            {/* <tr>
+                                                {/* <tr>
                                         <th>Pending</th>
                                         <td className="text-right"><strong>{pendingDivs}</strong> <small>DYP</small></td>
                                     </tr> */}
 
-                                            <tr>
-                                                <td style={{ fontSize: '1rem', paddingTop: '2rem' }} colSpan='2' className='text-center'>
-                                                    <a target='_blank' rel='noopener noreferrer' href={`${window.config.etherscan_baseURL}/token/${reward_token._address}?a=${coinbase}`}>View Transaction History on Etherscan</a> &nbsp; <i style={{ fontSize: '.8rem' }} className='fas fa-external-link-alt'></i>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style={{ fontSize: '1rem' }} colSpan='2' className='text-center'>
-                                                    <span className='lp-link'>
-                                                        <NavLink style={{fontSize: '1rem'}} to='/referral-stats'>View Referral Stats</NavLink>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colSpan='2'>
-                                                    <div><span style={{fontSize: '.8rem'}}>
+                                                <tr>
+                                                    <td style={{ fontSize: '1rem', paddingTop: '2rem' }} colSpan='2' className='text-center'>
+                                                        <a target='_blank' rel='noopener noreferrer' href={`${window.config.etherscan_baseURL}/token/${reward_token._address}?a=${coinbase}`}>View Transaction History on BscScan</a> &nbsp; <i style={{ fontSize: '.8rem' }} className='fas fa-external-link-alt'></i>
+                                                    </td>
+                                                </tr>
+                                                {/*<tr>*/}
+                                                {/*    <td style={{ fontSize: '1rem' }} colSpan='2' className='text-center'>*/}
+                                                {/*    <span className='lp-link'>*/}
+                                                {/*        <NavLink style={{fontSize: '1rem'}} to='/referral-stats'>View Referral Stats</NavLink>*/}
+                                                {/*    </span>*/}
+                                                {/*    </td>*/}
+                                                {/*</tr>*/}
+                                                <tr>
+                                                    <td colSpan='2'>
+                                                        <div><span style={{fontSize: '.8rem'}}>
 
                                                         <span style={{ cursor: "pointer" }}>
                                                             <Clipboard
@@ -522,21 +707,21 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock }) {
                                                         </span>
 
 
-                                                        <br /><a href={this.getReferralLink()}> {this.getReferralLink()} </a></span></div>
-                                                </td>
-                                            </tr>
-                                            <tr>
+                                                        <br /><a className='text-muted small' href={this.getReferralLink()}> {this.getReferralLink()} </a></span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
 
-                                            </tr>
-                                            {isOwner && <tr>
-                                                <td style={{ fontSize: '1rem' }} colSpan='2' className='text-center'>
-                                                    <a onClick={this.handleListDownload} target='_blank' rel='noopener noreferrer' href='#'><i style={{ fontSize: '.8rem' }} className='fas fa-download'></i> Download Stakers List </a>
-                                                </td>
-                                            </tr>}
-                                            </tbody>
-                                        </table>
+                                                </tr>
+                                                {isOwner && <tr>
+                                                    <td style={{ fontSize: '1rem' }} colSpan='2' className='text-center'>
+                                                        <a onClick={this.handleListDownload} target='_blank' rel='noopener noreferrer' href='#'><i style={{ fontSize: '.8rem' }} className='fas fa-download'></i> Download Stakers List </a>
+                                                    </td>
+                                                </tr>}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
 

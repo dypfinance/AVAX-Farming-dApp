@@ -20,6 +20,8 @@ import setupnetwork from './functions/setupnetwork';
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+import initConstantStaking from './components/constant-staking'
+
 //const eth_address = 'ETH'
 const wbnb_address = '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7'
 
@@ -38,6 +40,12 @@ const Vesting = initVesting({ staking: window.constant_staking_30, buyers: true,
 const VestingStaking = initVestingStaking({ staking: window.constant_staking_60, apr: 0, liquidity: eth_address, expiration_time: '16 February 2022' })
 const VestingAirdrop = initVesting({ staking: window.constant_staking_90, buyers: false, apr: 0, liquidity: eth_address, expiration_time: '23 November 2022' })
 const VestingStakingAirdrop = initVestingStaking({ staking: window.constant_staking_120, apr: 0, liquidity: eth_address, expiration_time: '23 November 2022' })
+
+
+//Constant Staking New
+const avax_address = 'AVAX'
+const ConstantStaking30 = initConstantStaking({ staking: window.constant_staking_new1, apr: 25, liquidity: avax_address, expiration_time: '6 December 2022' })
+const ConstantStaking90 = initConstantStaking({ staking: window.constant_staking_new2, apr: 50, liquidity: avax_address, expiration_time: '6 December 2022' })
 
 const Modal = ({ handleClose, show, children }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -66,6 +74,7 @@ class App extends React.Component {
     this.state = {
         is_wallet_connected: false,
         the_graph_result: JSON.parse(JSON.stringify(window.the_graph_result)),
+        the_graph_result_AVAX_V2: JSON.parse(JSON.stringify(window.the_graph_result_avax_v2)),
         referrer: '',
         darkTheme: false,
         show: false
@@ -132,6 +141,15 @@ class App extends React.Component {
                 }
             }
             this.setState({is_wallet_connected, coinbase: await window.web3.eth.getCoinbase(), referrer})
+
+            try {
+                let the_graph_result_AVAX_V2 = await window.get_the_graph_avax_v2()
+                this.setState({ the_graph_result_AVAX_V2: JSON.parse(JSON.stringify(the_graph_result_AVAX_V2)) })
+            } catch (e) {
+                // window.alertify.error("Cannot fetch TVL");
+                console.error("TVL AVAX V2 error: "+e)
+            }
+
             try {
                 let the_graph_result = await window.refresh_the_graph_result()
                 this.setState({ the_graph_result: JSON.parse(JSON.stringify(the_graph_result)) })
@@ -166,6 +184,15 @@ class App extends React.Component {
                 }
             }
             this.setState({is_wallet_connected, coinbase: await window.web3.eth.getCoinbase(), referrer})
+
+            try {
+                let the_graph_result_AVAX_V2 = await window.get_the_graph_avax_v2()
+                this.setState({ the_graph_result_AVAX_V2: JSON.parse(JSON.stringify(the_graph_result_AVAX_V2)) })
+            } catch (e) {
+                // window.alertify.error("Cannot fetch TVL");
+                console.error("TVL AVAX V2 error: "+e)
+            }
+
             try {
                 let the_graph_result = await window.refresh_the_graph_result()
                 this.setState({ the_graph_result: JSON.parse(JSON.stringify(the_graph_result)) })
@@ -286,7 +313,8 @@ render() {
       <Route exact path='/airdrop' render={props => <VestingAirdrop the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
       <Route exact path='/airdrop-staking' render={props => <VestingStakingAirdrop the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
-
+      <Route exact path='/constant-staking-1' render={props => <ConstantStaking30 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/constant-staking-2' render={props => <ConstantStaking90 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*<Route exact path='/' render={props => <StakingList tvl_all={getFormattedNumber(this.getCombinedTvlUsd(), 2)} tvl_farming={getFormattedNumber(this.getTvlFarming(), 2)} {...props} />} />*/}
       </div>
