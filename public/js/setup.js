@@ -3,6 +3,7 @@ window.WALLET_TYPE = ''
 window.the_graph_result = {}
 // MAKE SURE THIS ADDRESS IS LOWERCASE
 const TOKEN_ADDRESS = "0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17"
+const TOKEN_IDYP_ADDRESS = "0xbd100d061e120b2c67a24453cf6368e63f1be056"
 
 // MAKE SURE ALL THESE ADDRESSES ARE LOWERCASE
 const TOKENS_DISBURSED_PER_YEAR = [
@@ -10,9 +11,20 @@ const TOKENS_DISBURSED_PER_YEAR = [
 	540_000,
 	900_000,
 	1_200_000,
+
+	660_000,
+	996_000,
+	1_680_000,
+	2_220_000,
+	2_760_000,
 ]
 
 window.rebase_factors = [
+	1e0,
+	1e0,
+	1e0,
+	1e0,
+	1e0,
 	1e0,
 	1e0,
 	1e0,
@@ -26,6 +38,13 @@ const LP_IDs =
 			"0x497070e8b6c55fd283d8b259a6971261e2021c01-0xd8af0591be4fba56e3634c992b7fe4ff0a90b584",
 			"0x497070e8b6c55fd283d8b259a6971261e2021c01-0xbebe1fe1444a50ac6ee95ea25ba80adf5ac7322c",
 			"0x497070e8b6c55fd283d8b259a6971261e2021c01-0x79be220ab2dfcc2f140b59a97bfe6751ed1579b0",
+		],
+		"wavax": [
+			"0x66eecc97203704d9e2db4a431cb0e9ce92539d5a-0x035d65babf595758d7a439d5870badc44218d028",
+			"0x66eecc97203704d9e2db4a431cb0e9ce92539d5a-0x6c325dfea0d18387d423c869e328ef005cba024f",
+			"0x66eecc97203704d9e2db4a431cb0e9ce92539d5a-0x85c4f0cea0994de365dc47ba22dd0fd9899f93ab",
+			"0x66eecc97203704d9e2db4a431cb0e9ce92539d5a-0x6f5dc6777b2b4667bf183d093111867239518af5",
+			"0x66eecc97203704d9e2db4a431cb0e9ce92539d5a-0x10e105676cac55b74cb6500a8fb5d2f84804393d",
 		]
 }
 
@@ -43,7 +62,7 @@ window.config = {
 	ZERO_ADDRESS: '0x0000000000000000000000000000000000000000',
 
 	// address of eth token on bsc!
-	claim_as_eth_address: '0xf20d962a6c8f70c731bd838a3a388d7d48fa6e15',
+	claim_as_eth_address: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
 	
 	admin_address: '0x910090Ea889B64B4e722ea4b8fF6D5e734dFb38F',
 
@@ -75,7 +94,7 @@ window.config = {
 	etherscan_baseURL: 'https://cchain.explorer.avax.network',
 	max_proposals_per_call: 4,
 	// default_gasprice_gwei: 60,
-	default_gas_amount: 600000,
+	default_gas_amount: 1200000,
 	token_decimals: 18,
 	lp_amplify_factor: 1e0,
 
@@ -95,6 +114,35 @@ window.config = {
 	constant_stakingnew_new1_address: '0x1A4fd0E9046aeD92B6344F17B0a53969F4d5309B',
 	constant_stakingnew_new2_address: '0x5566B51a1B7D5E6CAC57a68182C63Cb615cAf3f9',
 
+	//Buyback new
+	buyback_staking1_1_address: '0xC905D5DD9A4f26eD059F76929D11476B2844A7c3',
+	buyback_staking1_2_address: '0x267434f01ac323C6A5BCf41Fa111701eE0165a37',
+	//constant staking for Buyback New
+	constant_stakingnew_new3_address: '0xe6B307CD185f2A541a661eA312E3e7939Ea9d218',
+	constant_stakingnew_new4_address: '0x934819D227B7095595eC9cA6604eF2Dd0C3a9EA2',
+
+
+	//Farming new
+	token_new_address: '0x66eecc97203704d9e2db4a431cb0e9ce92539d5a',
+	farming_new_1_address: '0x035d65babF595758D7A439D5870BAdc44218D028',
+	constant_stakingnew_new5_address: '0x1cA9Fc98f3b997E08bC04691414e33B1835aa7e5',
+
+	//Farming New
+	farming_new_2_address: '0x6c325DfEA0d18387D423C869E328Ef005cBA024F',
+	constant_stakingnew_new6_address: '0x6a258Bd17456e057A7c6102177EC2f9d64D5F9e4',
+
+
+	//Farming New
+	farming_new_3_address: '0x85C4f0CEA0994dE365dC47ba22dD0FD9899F93Ab',
+	constant_stakingnew_new7_address: '0xC2ba0abFc89A5A258e6440D82BB95A5e2B541581',
+
+	//Farming New
+	farming_new_4_address: '0x6f5dC6777b2B4667Bf183D093111867239518af5',
+	constant_stakingnew_new8_address: '0x4c16093Da4BA7a604A1Fe8CD5d387cC904B3D407',
+
+	//Farming New
+	farming_new_5_address: '0x10E105676CAC55b74cb6500a8Fb5d2f84804393D',
+	constant_stakingnew_new9_address: '0x9FF3DC1f7042bAF46651029C7284Fc3B93e21a4D',
 
 	//reward_as_png: '0x60781c2586d68229fde47564546784ab3faca982',
 
@@ -158,6 +206,54 @@ window.buyback_tokens = {
 	},
 	'0x094bd7b2d99711a1486fb94d4395801c6d0fddcc': {
 		symbol: 'TEDDY', decimals: 18
+	}
+}
+
+window.buyback_tokens_farming = {
+	'0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7': {
+		symbol: 'WAVAX', decimals: 18
+	},
+	'0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab': {
+		symbol: 'WETH.e', decimals: 18
+	},
+	'0x50b7545627a5162f82a992c33b87adc75187b218': {
+		symbol: 'WBTC.e', decimals: 8
+	},
+	'0x60781c2586d68229fde47564546784ab3faca982': {
+		symbol: 'PNG', decimals: 18
+	},
+	'0xc7198437980c041c805a1edcba50c1ce5db95118': {
+		symbol: 'USDT.e', decimals: 6
+	},
+	'0x8729438eb15e2c8b576fcc6aecda6a148776c0f5': {
+		symbol: 'QI', decimals: 18
+	},
+	'0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664': {
+		symbol: 'USDC.e', decimals: 6
+	},
+	'0xd586e7f844cea2f87f50152665bcbc2c279d8d70': {
+		symbol: 'DAI.e', decimals: 18
+	},
+	'0xd1c3f94de7e5b45fa4edbba472491a9f4b166fc4': {
+		symbol: 'XAVA', decimals: 18
+	},
+	'0xe896cdeaac9615145c0ca09c8cd5c25bced6384c': {
+		symbol: 'PEFI', decimals: 18
+	},
+	'0x59414b3089ce2af0010e7523dea7e2b35d776ec7': {
+		symbol: 'YAK', decimals: 18
+	},
+	'0xc38f41a296a4493ff429f1238e030924a1542e50': {
+		symbol: 'SNOB', decimals: 18
+	},
+	'0x5947bb275c521040051d82396192181b413227a3': {
+		symbol: 'LINK.e', decimals: 18
+	},
+	'0x094bd7b2d99711a1486fb94d4395801c6d0fddcc': {
+		symbol: 'TEDDY', decimals: 18
+	},
+	'0xbd100d061e120b2c67a24453cf6368e63f1be056': {
+		symbol: 'iDYP', decimals: 18
 	}
 }
 
@@ -3023,6 +3119,7 @@ class BUYBACK_STAKING {
 		[
 			"stake",
 			"unstake",
+			"reInvest",
 			"claim",
 		].forEach(fn_name => {
 			this[fn_name] = async function (...args) {
@@ -3203,6 +3300,8 @@ window.staking_dyp_90 = new STAKING("STAKING_DYP90", "TOKEN_DYP90")
 
 /*buyback*/
 window.buyback_staking = new BUYBACK_STAKING('BUYBACK_STAKING')
+window.buyback_staking1_1 = new BUYBACK_STAKING('BUYBACK_STAKING1_1')
+window.buyback_staking1_2 = new BUYBACK_STAKING('BUYBACK_STAKING1_2')
 
 // constant staking
 window.constant_staking_30 = new CONSTANT_STAKING("CONSTANT_STAKING_30")
@@ -3214,6 +3313,27 @@ window.constant_staking_120 = new CONSTANT_STAKING("CONSTANT_STAKING_120")
 //constant staking NEW CONTRACTS
 window.constant_staking_new1 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW1")
 window.constant_staking_new2 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW2")
+
+//constant staking for Buyback New
+window.constant_staking_new3 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW3")
+window.constant_staking_new4 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW4")
+
+/* Farming New */
+window.token_new = new TOKEN("TOKEN_NEW")
+window.farming_new_1 = new STAKING("FARMING_NEW_1")
+window.constant_staking_new5 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW5")
+
+window.farming_new_2 = new STAKING("FARMING_NEW_2")
+window.constant_staking_new6 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW6")
+
+window.farming_new_3 = new STAKING("FARMING_NEW_3")
+window.constant_staking_new7 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW7")
+
+window.farming_new_4 = new STAKING("FARMING_NEW_4")
+window.constant_staking_new8 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW8")
+
+window.farming_new_5 = new STAKING("FARMING_NEW_5")
+window.constant_staking_new9 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW9")
 
 
 /**
@@ -3233,18 +3353,46 @@ function get_usd_values({
 		let usdPerPlatformToken = await getPrice(window.config.cg_ids['platform-token'])
 
 
+		let aux_Price = usdPerPlatformToken
+
+		let amount = new BigNumber(1000000000000000000).toFixed(0)
+		let router = await window.getPangolinRouterContract()
+		let WETH = await router.methods.WAVAX().call()
+		let platformTokenAddress = window.config.USDCe_address
+		let rewardTokenAddress = window.config.reward_token_idyp_address
+		let path = [...new Set([rewardTokenAddress, WETH, platformTokenAddress].map(a => a.toLowerCase()))]
+		let _amountOutMin = await router.methods.getAmountsOut(amount, path).call()
+		_amountOutMin = _amountOutMin[_amountOutMin.length - 1]
+		_amountOutMin = new BigNumber(_amountOutMin).div(1e6).toFixed(18)
+		//console.log({_amountOutMin})
+
+
 		async function getData(token_contract_addresses, lp_ids) {
 			let tokens = []
 			let liquidityPositions = []
+			let token_price_usd = 0
 			for (let id of token_contract_addresses) {
-				let token_price_usd = await getPrice(window.config.cg_ids[id])
+				if(id==TOKEN_ADDRESS)
+					token_price_usd = await getPrice(window.config.cg_ids[id])
+				else
+					token_price_usd = parseFloat(_amountOutMin)
 				tokens.push({id, token_price_usd})
 			}
+
+			let platformTokenContract = {}
 			for (let lp_id of lp_ids) {
 				let pairAddress = lp_id.split('-')[0]
 				let stakingContractAddress = lp_id.split('-')[1]
 
-				let platformTokenContract = new window.web3.eth.Contract(window.TOKEN_ABI, window.config.reward_token_address, {from: await getCoinbase()})
+				if (pairAddress == '0x66eecc97203704d9e2db4a431cb0e9ce92539d5a'){
+					platformTokenContract = new window.web3.eth.Contract(window.TOKEN_ABI, window.config.reward_token_idyp_address, {from: await getCoinbase()})
+					usdPerPlatformToken = _amountOutMin
+				}
+				else {
+					platformTokenContract = new window.web3.eth.Contract(window.TOKEN_ABI, window.config.reward_token_address, {from: await getCoinbase()})
+					usdPerPlatformToken = aux_Price
+				}
+
 				let pairTokenContract = new window.web3.eth.Contract(window.TOKEN_ABI, pairAddress, {from: await getCoinbase()})
 
 				let [lpTotalSupply, stakingLpBalance, platformTokenInLp] = await Promise.all([pairTokenContract.methods.totalSupply().call(), pairTokenContract.methods.balanceOf(stakingContractAddress).call(), platformTokenContract.methods.balanceOf(pairAddress).call()])
@@ -3429,7 +3577,7 @@ async function get_usd_values_with_apy_and_tvl(...arguments) {
 
 
 async function refresh_the_graph_result() {
-	let result = await get_usd_values_with_apy_and_tvl({token_contract_addresses: [TOKEN_ADDRESS], lp_ids: LP_ID_LIST})
+	let result = await get_usd_values_with_apy_and_tvl({token_contract_addresses: [TOKEN_ADDRESS, TOKEN_IDYP_ADDRESS], lp_ids: LP_ID_LIST})
 	window.the_graph_result = result
 	//window.TVL_FARMING_POOLS = await refreshBalance()
 	return result
@@ -3537,3 +3685,16 @@ async function isStaking(holder, stakingAddress) {
 	let tokenContract = new window.web3.eth.Contract(window.CONSTANT_STAKING_ABI, stakingAddress, {from: await getCoinbase()})
 	return await tokenContract.methods.depositedTokens(holder).call()
 }
+
+
+/* iDYP Staking Stats V2 */
+
+const FarmingStakingAddresses = [
+	"0x035d65babf595758d7a439d5870badc44218d028-0x1ca9fc98f3b997e08bc04691414e33b1835aa7e5",
+	"0x6c325dfea0d18387d423c869e328ef005cba024f-0x6a258bd17456e057a7c6102177ec2f9d64d5f9e4",
+	"0x85c4f0cea0994de365dc47ba22dd0fd9899f93ab-0xc2ba0abfc89a5a258e6440d82bb95a5e2b541581",
+	"0x6f5dc6777b2b4667bf183d093111867239518af5-0x4c16093da4ba7a604a1fe8cd5d387cc904b3d407",
+	"0x10e105676cac55b74cb6500a8fb5d2f84804393d-0x9ff3dc1f7042baf46651029c7284fc3b93e21a4d"
+]
+
+window.FarmingStakingAddresses = FarmingStakingAddresses
