@@ -298,9 +298,9 @@ export default class StakingStats extends React.Component {
                                     <th>Pool</th>
                                     <th>Deposited LP + DYP</th>
                                     <th>Claimable DYP</th>
-                                    <th>Claimable WBNB</th>
-                                    <th>Earned WBNB</th>
-                                    {can_access && <th>Claimed WBNB</th>}
+                                    <th>Claimable WAVAX</th>
+                                    <th>Earned WAVAX</th>
+                                    {can_access && <th>Claimed WAVAX</th>}
                                     <th>Action</th>
                                 </tr>
                                 </thead>

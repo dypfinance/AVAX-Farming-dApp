@@ -818,7 +818,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                         <label htmlFor='deposit-amount' className='text-left d-block'>REWARDS</label>
                                                         <div className='form-row'>
                                                             <div className='col-md-6'>
-                                                                <p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '1px', paddingRight: '10px',  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivsEth}</span> <small className='text-bold'>WBNB</small></p>
+                                                                <p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '1px', paddingRight: '10px',  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivsEth}</span> <small className='text-bold'>WAVAX</small></p>
                                                             </div>
                                                             <div className='col-md-6'>
                                                                 <p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '11px', paddingRight: 0,  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivs}</span> <small className='text-bold'>DYP</small></p>
@@ -828,7 +828,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     <div className='row'>
                                                         <div style={{ marginBottom: '0.7rem'}} className='col-12 col-sm-6'>
                                                             <button title={claimTitle} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
-                                                                CLAIM AS WBNB
+                                                                CLAIM AS WAVAX
                                                             </button>
                                                         </div>
                                                         <div style={{ marginBottom: '0.7rem' }} className='col-12 col-sm-6'>
@@ -886,7 +886,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                         </div>
                                                     </div>
                                                     <p>
-                                                        Approx. ${getFormattedNumber(this.getApproxReturnUSD(), 2)} USD ({getFormattedNumber(this.getApproxReturnUSD()/this.getUsdPerETH(), 6)} WBNB)
+                                                        Approx. ${getFormattedNumber(this.getApproxReturnUSD(), 2)} USD ({getFormattedNumber(this.getApproxReturnUSD()/this.getUsdPerETH(), 6)} WAVAX)
                                                     </p>
                                                     <p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted'>Approx. Value Not Considering Burns</p>
                                                 </form>
@@ -973,8 +973,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     <td className="text-right"><strong>{totalEarnedTokens}</strong> <small>DYP</small></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Total Earned WBNB</th>
-                                                    <td className="text-right"><strong>{totalEarnedEth}</strong> <small>WBNB</small></td>
+                                                    <th>Total Earned WAVAX</th>
+                                                    <td className="text-right"><strong>{totalEarnedEth}</strong> <small>WAVAX</small></td>
                                                 </tr>
                                                 <tr>
                                                     <th>To be Swapped</th>
