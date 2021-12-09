@@ -156,9 +156,9 @@ th, td, a, a:hover, a:active, a:link, a:visited {
 
 
 small {
-    font-size: .8rem;
+    font-size: 1rem;
     position: relative;
-    top:1px;
+    /*top:1px;*/
 }
 
 button.btn-primary {
