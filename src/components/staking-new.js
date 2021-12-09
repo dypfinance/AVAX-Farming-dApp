@@ -70,7 +70,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 lastClaimedTime: '',
 
                 depositAmount: '',
-                withdrawAmount: '',
+                withdrawAmount: 0,
 
                 totalEarnedEth: '',
                 pendingDivsEth: '',
@@ -459,10 +459,20 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 let tvlValueiDYP = new BigNumber(tvlConstantiDYP).times(_amountOutMin).toFixed(18)
                 let tvlValueiDYPFarming = new BigNumber(tvliDYP).times(_amountOutMin).toFixed(18)
                 let usd_per_lp = lp_data ? lp_data[this.props.lp_id].usd_per_lp : 0
-                let myDepositedLpTokens = new BigNumber(depositedTokens).times(usd_per_lp).toFixed(18)
-                let depositedTokensUSD = new BigNumber(depositedTokens).times(usd_per_lp).plus(tvlValueConstantDYP).toFixed(18)
+
+                /* USD VALUE OF MY LP DEPOSITED */
+                // let myDepositedLpTokens = new BigNumber(depositedTokens).times(usd_per_lp).toFixed(18)
+                let myDepositedLpTokens = new BigNumber(depositedTokens).toFixed(18)
+
+                /* USD VALUE OF WITHDRAW OF LP + iDYP */
+                // let depositedTokensUSD = new BigNumber(depositedTokens).times(usd_per_lp).plus(tvlValueConstantDYP).toFixed(18)
+                let depositedTokensUSD = new BigNumber(depositedTokens).toFixed(18)
                 // let tvlUSD = new BigNumber(tvl).times(usd_per_lp).plus(tvlValueiDYP).toFixed(18)
-                let tvlUSD = new BigNumber(tvl).times(usd_per_lp).toFixed(18)
+
+                /* USD VALUE OF TOTAL LP DEPOSITED */
+                // let tvlUSD = new BigNumber(tvl).times(usd_per_lp).toFixed(18)
+                let tvlUSD = new BigNumber(tvl).toFixed(18)
+
                 let totalValueLocked = new BigNumber(tvlUSD).plus(tvlValueiDYP).plus(tvlValueiDYPFarming).plus(tvlValueConstantDYP).toFixed(18)
                 //console.log({tvlValueConstantDYP})
 
@@ -780,30 +790,53 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                 <form onSubmit={this.handleWithdraw}>
                                                     <div className='form-group'>
                                                         <label htmlFor='deposit-amount' className='d-block text-left'>WITHDRAW</label>
-                                                        <div>
-                                                            <select value={this.state.selectedBuybackTokenWithdraw} onChange={e => this.handleSelectedTokenChangeWithdraw(e.target.value)} className='form-control' className='form-control'>
-                                                                {Object.keys(window.buyback_tokens_farming).map((t) => <option key={t} value={t}> {window.buyback_tokens_farming[t].symbol} </option>)}
-                                                            </select>
-                                                            <br />
+                                                        <div className='row ' style={{paddingBottom: '20px'}}>
+                                                            <div className="col-6">
+                                                                <input value={Number(this.state.withdrawAmount) > 0 ? `${this.state.withdrawAmount*LP_AMPLIFY_FACTOR} iDYP/WAVAX` : `${this.state.withdrawAmount} iDYP/WAVAX`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
+                                                                {/*<div className='input-group-append'>*/}
+                                                                {/*    <button className='btn  btn-primary right-radius btn-max l-light-btn' style={{cursor: 'pointer'}} onClick={this.handleSetMaxWithdraw}>*/}
+                                                                {/*        MAX*/}
+                                                                {/*    </button>*/}
+                                                                {/*</div>*/}
+                                                            </div>
+                                                            <div className="col-6">
+                                                                <input value={`${depositedTokensDYP} DYP`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
+                                                                {/*<div className='input-group-append'>*/}
+                                                                {/*    <button className='btn  btn-primary right-radius btn-max l-light-btn' style={{cursor: 'pointer'}} onClick={this.handleSetMaxWithdraw}>*/}
+                                                                {/*        MAX*/}
+                                                                {/*    </button>*/}
+                                                                {/*</div>*/}
+                                                            </div>
                                                         </div>
-                                                        <div className='input-group '>
-                                                            <input value={Number(this.state.withdrawAmount) > 0 ? `$${this.state.withdrawAmount*LP_AMPLIFY_FACTOR}` : `$${this.state.withdrawAmount}`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
-                                                            {/*<div className='input-group-append'>*/}
-                                                            {/*    <button className='btn  btn-primary right-radius btn-max l-light-btn' style={{cursor: 'pointer'}} onClick={this.handleSetMaxWithdraw}>*/}
-                                                            {/*        MAX*/}
-                                                            {/*    </button>*/}
-                                                            {/*</div>*/}
+                                                        <div className="row">
+                                                            <div className="col-6">
+                                                                <select value={this.state.selectedBuybackTokenWithdraw} onChange={e => this.handleSelectedTokenChangeWithdraw(e.target.value)} className='form-control' className='form-control'>
+                                                                    {Object.keys(window.buyback_tokens_farming).map((t) => <option key={t} value={t}> {window.buyback_tokens_farming[t].symbol} </option>)}
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-6">
+                                                                <select value="DYP" className='form-control' className='form-control'>
+                                                                    <option value="DYP"> DYP </option>)}
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <button title={canWithdraw?'':`You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
-                                                        WITHDRAW
-                                                    </button>
-                                                    <button onClick={e => {
-                                                        e.preventDefault()
-                                                        this.handleWithdrawDyp()
-                                                    }} title={canWithdraw?'':`You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
-                                                        WITHDRAW DYP
-                                                    </button>
+                                                    {/*<br />*/}
+                                                    <div className="row">
+                                                        <div className="col-6">
+                                                            <button title={canWithdraw?'':`You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
+                                                                WITHDRAW
+                                                            </button>
+                                                        </div>
+                                                        <div className="col-6">
+                                                            <button onClick={e => {
+                                                                e.preventDefault()
+                                                                this.handleWithdrawDyp()
+                                                            }} title={canWithdraw?'':`You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
+                                                                WITHDRAW
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                     {/*<p style={{fontSize: '.8rem'}}*/}
                                                     {/*   className='mt-1 text-center mb-0 text-muted mt-3'>*/}
                                                     {/*    To <strong>WITHDRAW</strong> you will be asked to sign <strong>2 transactions</strong>*/}
@@ -922,13 +955,13 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                 <tr>
                                                     <th>My Address</th>
                                                     <td className='text-right'>
-                                                        <Address style={{fontFamily: 'monospace'}} a={coinbase} />
+                                                        <Address style={{fontFamily: 'monospace', fontSize: '16px'}} a={coinbase} />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Contract Address</th>
                                                     <td className='text-right'>
-                                                        <Address style={{fontFamily: 'monospace'}} a={staking._address} />
+                                                        <Address style={{fontFamily: 'monospace', fontSize: '16px'}} a={staking._address} />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -938,7 +971,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
 
                                                 <tr>
                                                     <th>My LP Balance</th>
-                                                    <td className="text-right"><strong>${token_balance}</strong> <small>{lp_symbol}</small></td>
+                                                    <td className="text-right"><strong>{token_balance}</strong> <small>iDYP/WAVAX</small></td>
                                                 </tr>
                                                 <tr>
                                                     <th>My DYP Balance</th>
@@ -950,11 +983,11 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                 </tr>
                                                 <tr>
                                                     <th>MY LP Deposit</th>
-                                                    <td className="text-right"><strong>${myDepositedLpTokens}</strong> <small>{lp_symbol}</small></td>
+                                                    <td className="text-right"><strong>{myDepositedLpTokens}</strong> <small>iDYP/WAVAX</small></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Total LP Deposited</th>
-                                                    <td className="text-right"><strong>${tvl}</strong> <small>{lp_symbol}</small></td>
+                                                    <td className="text-right"><strong>{tvl}</strong> <small>iDYP/WAVAX</small></td>
                                                 </tr>
                                                 <tr>
                                                     <th>My DYP Deposit</th>
