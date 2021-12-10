@@ -969,18 +969,18 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     <td className="text-right"><strong>{expiration_time}</strong></td>
                                                 </tr>
 
-                                                <tr>
-                                                    <th>My LP Balance</th>
-                                                    <td className="text-right"><strong>{token_balance}</strong> <small>iDYP/WAVAX</small></td>
-                                                </tr>
+                                                {/*<tr>*/}
+                                                {/*    <th>My LP Balance</th>*/}
+                                                {/*    <td className="text-right"><strong>{token_balance}</strong> <small>iDYP/WAVAX</small></td>*/}
+                                                {/*</tr>*/}
                                                 <tr>
                                                     <th>My DYP Balance</th>
                                                     <td className="text-right"><strong>{reward_token_balance}</strong> <small>DYP</small></td>
                                                 </tr>
-                                                <tr>
-                                                    <th>My WETH Balance</th>
-                                                    <td className="text-right"><strong>{wethBalance}</strong> <small>WETH</small></td>
-                                                </tr>
+                                                {/*<tr>*/}
+                                                {/*    <th>My WETH Balance</th>*/}
+                                                {/*    <td className="text-right"><strong>{wethBalance}</strong> <small>WETH</small></td>*/}
+                                                {/*</tr>*/}
                                                 <tr>
                                                     <th>MY LP Deposit</th>
                                                     <td className="text-right"><strong>{myDepositedLpTokens}</strong> <small>iDYP/WAVAX</small></td>
