@@ -79,22 +79,28 @@ export default class StakingStats extends React.Component {
 
         let constantStaking = ''
         let lp_id = window.FarmingStakingAddresses
+        let isConstant = 0
 
         for (let id of lp_id){
             let contractAdd = id.split('-')[0]
             let constant = id.split('-')[1]
             if (contractAddress == contractAdd){
                 constantStaking = new window.web3.eth.Contract(window.CONSTANT_STAKINGNEW_ABI, constant)
+                isConstant = 1
                 break;
             }
             else {
                 constantStaking = new window.web3.eth.Contract(window.STAKING_ABI, contractAdd)
+                isConstant = 0
             }
         }
 
         let coinbase = window.coinbase_address
 
-        return (await constantStaking.methods.getPendingDivs(coinbase).call())
+        if (isConstant == 1)
+            return (await constantStaking.methods.getTotalPendingDivs(coinbase).call())
+        else
+            return (await constantStaking.methods.getPendingDivs(coinbase).call())
     }
 
     getClaimableWeth = async (contractAddress) => {
@@ -377,7 +383,8 @@ export default class StakingStats extends React.Component {
                                                 <td className={Number(depositedLp) > 0 ? 'text-bold' : 'text-muted'}> {f( depositedDyp/1e18 * window.rebase_factors[i], 2)} (${f( depositedDyp/1e18*usd_per_token, 2 )}) </td>
 
                                                 {/*<td className={Number(claimableTokens) > 0 ? 'text-bold' : 'text-muted'}> {f( claimableTokens/1e18, 6)} (${f( claimableTokens/1e18 * usd_per_idyp, 2 )}) </td>*/}
-                                                <td className={Number(claimableTokens) > 0 ? 'text-bold' : 'text-muted'}> {f( claimableTokens/1e18, 6 )} (${f( claimableTokens/1e18 * usd_per_idyp, 2 )}) </td>
+                                                <td className={Number(claimableTokens) > 0 ? 'text-bold' : 'text-muted'}> {f( (claimableTokens * usd_per_idyp)/usd_per_token/1e18, 6 )} (${f( claimableTokens/1e18 * usd_per_idyp, 2 )}) </td>
+
                                                 <td className={Number(claimableEth) > 0 ? 'text-bold' : 'text-muted'}> {f(claimableEth / 1e18, 6)} (${f(claimableEth / 1e18 * usd_per_eth, 2)}) </td>
                                                 <td className={Number(wethEarned) > 0 ? 'text-bold' : 'text-muted'}> {f(wethEarned / 1e18, 6)} (${f(wethEarned / 1e18 * usd_per_eth, 2)}) </td>
                                                 {can_access && <td className={Number(wethPaidOut) > 0 ? 'text-bold' : 'text-muted'}> {f( wethPaidOut/1e18, 6)} (${f( wethPaidOut/1e18 * usd_per_eth , 2 )}) </td>}
@@ -391,7 +398,7 @@ export default class StakingStats extends React.Component {
                                     <td> ${f( this.getTotalUsdValueOfLpDeposited(), 2)} </td>
                                     {/*<td> {f( this.getTotalClaimableTokens(), 6)} (${f( this.getTotalClaimableTokens() * usd_per_token, 2 )}) </td>*/}
                                     <td> ${f( this.getTotalUsdValueOfDypDeposited() , 2 )} </td>
-                                    <td> {f( this.getTotalClaimableTokens(), 6 )} (${f( this.getTotalClaimableTokens() * usd_per_idyp, 2 )}) </td>
+                                    <td> {f( this.getTotalClaimableTokens() * usd_per_idyp / usd_per_token, 6 )} (${f( this.getTotalClaimableTokens() * usd_per_idyp, 2 )}) </td>
                                     <td> {f(this.getTotalClaimableEth(), 6)} (${f(this.getTotalClaimableEth() * usd_per_eth, 2)}) </td>
                                     <td> {f( this.getCombinedWethEarnings(), 6)} (${f( this.getCombinedWethEarnings() * usd_per_eth , 2 )}) </td>
                                     {can_access && <td> {f( this.getTotalClaimedEth(), 6)} (${f( this.getTotalClaimedEth() * usd_per_eth , 2 )}) </td>}

@@ -610,10 +610,10 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
             myDepositedLpTokens = getFormattedNumber(myDepositedLpTokens, 2)
 
             depositedTokensDYP = new BigNumber(this.state.depositedTokensDYP).div(1e18).toString(10)
-            depositedTokensDYP = getFormattedNumber(depositedTokensDYP, 6)
+            depositedTokensDYP = getFormattedNumber(depositedTokensDYP, 2)
 
             tvlConstantDYP = new BigNumber(this.state.tvlConstantDYP).div(1e18).toString(10)
-            tvlConstantDYP = getFormattedNumber(tvlConstantDYP, 6)
+            tvlConstantDYP = getFormattedNumber(tvlConstantDYP, 2)
 
             tvl = new BigNumber(this.state.tvlUSD*LP_AMPLIFY_FACTOR).div(1e18).toString(10)
             tvl = getFormattedNumber(tvl, 2)
@@ -792,7 +792,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                         <label htmlFor='deposit-amount' className='d-block text-left'>WITHDRAW</label>
                                                         <div className='row ' style={{paddingBottom: '20px'}}>
                                                             <div className="col-6">
-                                                                <input value={Number(this.state.withdrawAmount) > 0 ? `${this.state.withdrawAmount*LP_AMPLIFY_FACTOR} iDYP/WAVAX` : `${this.state.withdrawAmount} iDYP/WAVAX`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
+                                                                <input value={Number(this.state.withdrawAmount) > 0 ? `${this.state.withdrawAmount*LP_AMPLIFY_FACTOR} LP` : `${this.state.withdrawAmount} LP`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
                                                                 {/*<div className='input-group-append'>*/}
                                                                 {/*    <button className='btn  btn-primary right-radius btn-max l-light-btn' style={{cursor: 'pointer'}} onClick={this.handleSetMaxWithdraw}>*/}
                                                                 {/*        MAX*/}
