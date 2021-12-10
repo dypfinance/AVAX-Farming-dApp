@@ -892,12 +892,12 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     </div>
 
                                                     <div className='form-row'>
-                                                        <div style={{ marginBottom: '0.7rem'}} className='col-12 col-sm-6'>
+                                                        <div className='col-6'>
                                                             <button title={claimTitle} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
                                                                 CLAIM
                                                             </button>
                                                         </div>
-                                                        <div style={{ marginBottom: '0.7rem' }} className='col-12 col-sm-6'>
+                                                        <div className='col-6'>
                                                             <button onClick={e => {
                                                                 e.preventDefault()
                                                                 this.handleClaimDyp()
