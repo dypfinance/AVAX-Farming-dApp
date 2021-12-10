@@ -98,7 +98,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 selectedTokenBalance: '',
                 selectedTokenSymbol: window.buyback_tokens_farming[Object.keys(window.buyback_tokens_farming)[0]].symbol,
 
-                selectedBuybackTokenWithdraw: Object.keys(window.buyback_tokens_farming)[0]
+                selectedBuybackTokenWithdraw: Object.keys(window.buyback_tokens_farming)[0],
+                selectedClaimToken: 0
 
             }
         }
@@ -177,6 +178,10 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
 
         handleSelectedTokenChangeWithdraw = async (tokenAddress) => {
             this.setState({selectedBuybackTokenWithdraw: tokenAddress})
+        }
+
+        handleClaimToken = async (token) => {
+            this.setState({selectedClaimToken: token})
         }
 
         handleStake = async (e) => {
@@ -305,6 +310,9 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
 
             let deadline = Math.floor(Date.now()/1e3 + window.config.tx_max_wait_seconds)
 
+            // console.log(this.state.selectedClaimToken)
+            let selectedToken = this.state.selectedClaimToken
+
             // let address = this.state.coinbase
             //
             // let amount = await constant.getTotalPendingDivs(address)
@@ -326,12 +334,21 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
             //     console.error(e)
             //     return;
             // }
-
-            try {
-                staking.claim(0, 0, deadline)
-            }  catch(e) {
-                console.error(e)
-                return;
+            if(selectedToken == 0){
+                try {
+                    staking.claim(0, 0, deadline)
+                }  catch(e) {
+                    console.error(e)
+                    return;
+                }
+            }
+            else {
+                try {
+                    staking.claimAs(window.config.claim_as_eth_address, 0, 0, 0, deadline)
+                }  catch(e) {
+                    console.error(e)
+                    return;
+                }
             }
         }
 
@@ -589,7 +606,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
             tokensToBeDisbursedOrBurnt = getFormattedNumber(tokensToBeDisbursedOrBurnt, 6)
 
             pendingDivsEth = new BigNumber(pendingDivsEth).div(1e18).toString(10)
-            pendingDivsEth = getFormattedNumber(pendingDivsEth, 6)
+            pendingDivsEth = getFormattedNumber(pendingDivsEth, 3)
 
             totalEarnedEth = new BigNumber(totalEarnedEth).div(1e18).toString(10)
             totalEarnedEth = getFormattedNumber(totalEarnedEth, 6)
@@ -598,7 +615,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
             reward_token_balance = getFormattedNumber(reward_token_balance, 6)
 
             pendingDivs = new BigNumber(pendingDivsStaking).div(10**TOKEN_DECIMALS).times(usd_per_idyp).div(usd_per_token).toString(10)
-            pendingDivs = getFormattedNumber(pendingDivs, 6)
+            pendingDivs = getFormattedNumber(pendingDivs, 3)
 
             totalEarnedTokens = new BigNumber(totalEarnedTokens).div(10**TOKEN_DECIMALS).toString(10)
             totalEarnedTokens = getFormattedNumber(totalEarnedTokens, 6)
@@ -790,7 +807,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                 <form onSubmit={this.handleWithdraw}>
                                                     <div className='form-group'>
                                                         <label htmlFor='deposit-amount' className='d-block text-left'>WITHDRAW</label>
-                                                        <div className='row ' style={{paddingBottom: '20px'}}>
+                                                        <div className='form-row ' style={{paddingBottom: '20px'}}>
                                                             <div className="col-6">
                                                                 <input value={Number(this.state.withdrawAmount) > 0 ? `${this.state.withdrawAmount*LP_AMPLIFY_FACTOR} LP` : `${this.state.withdrawAmount} LP`} onChange={e => this.setState({withdrawAmount: Number(e.target.value) > 0 ? e.target.value/LP_AMPLIFY_FACTOR : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
                                                                 {/*<div className='input-group-append'>*/}
@@ -808,21 +825,21 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                                 {/*</div>*/}
                                                             </div>
                                                         </div>
-                                                        <div className="row">
+                                                        <div className="form-row">
                                                             <div className="col-6">
                                                                 <select value={this.state.selectedBuybackTokenWithdraw} onChange={e => this.handleSelectedTokenChangeWithdraw(e.target.value)} className='form-control' className='form-control'>
                                                                     {Object.keys(window.buyback_tokens_farming).map((t) => <option key={t} value={t}> {window.buyback_tokens_farming[t].symbol} </option>)}
                                                                 </select>
                                                             </div>
                                                             <div className="col-6">
-                                                                <select value="DYP" className='form-control' className='form-control'>
-                                                                    <option value="DYP"> DYP </option>)}
+                                                                <select defaultValue="DYP" className='form-control' className='form-control'>
+                                                                    <option value="DYP"> DYP </option>
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     {/*<br />*/}
-                                                    <div className="row">
+                                                    <div className="form-row">
                                                         <div className="col-6">
                                                             <button title={canWithdraw?'':`You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
                                                                 WITHDRAW
@@ -849,19 +866,35 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                 <form onSubmit={this.handleClaimDivs}>
                                                     <div className='form-group'>
                                                         <label htmlFor='deposit-amount' className='text-left d-block'>REWARDS</label>
-                                                        <div className='form-row'>
-                                                            <div className='col-md-6'>
-                                                                <p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '1px', paddingRight: '10px',  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivsEth}</span> <small className='text-bold'>WAVAX</small></p>
+                                                        <div className='form-row mb-3'>
+                                                            <div className='col-6'>
+                                                                {/*<p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '1px', paddingRight: '10px',  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivsEth}</span> <small className='text-bold'>WAVAX</small></p>*/}
+                                                                <input value={Number(pendingDivsEth) > 0 ? `${pendingDivsEth} WAVAX` : `${pendingDivsEth} WAVAX`} onChange={e => this.setState({pendingDivsEth: Number(e.target.value) > 0 ? e.target.value : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
                                                             </div>
-                                                            <div className='col-md-6'>
-                                                                <p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '11px', paddingRight: 0,  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivs}</span> <small className='text-bold'>DYP</small></p>
+                                                            <div className='col-6'>
+                                                                {/*<p className='form-control  text-center' style={{border: 'none', marginBottom: 0, paddingLeft: '11px', paddingRight: 0,  background: 'transparent', color: 'var(--text-color)'}}><span style={{fontSize: '1.2rem', color: 'var(--text-color)'}}>{pendingDivs}</span> <small className='text-bold'>DYP</small></p>*/}
+                                                                <input value={Number(pendingDivs) > 0 ? `${pendingDivs} DYP` : `${pendingDivs} DYP`} onChange={e => this.setState({pendingDivs: Number(e.target.value) > 0 ? e.target.value : e.target.value})} className='form-control left-radius' placeholder='0' type='text' disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-row">
+                                                            <div className="col-6">
+                                                                <select value={this.state.selectedClaimToken} onChange={e => this.handleClaimToken(e.target.value)} className='form-control' className='form-control'>
+                                                                    <option value="0"> WAVAX </option>
+                                                                    <option value="1"> WETH.e </option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-6">
+                                                                <select defaultValue="DYP" className='form-control' className='form-control'>
+                                                                    <option value="DYP"> DYP </option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className='row'>
+
+                                                    <div className='form-row'>
                                                         <div style={{ marginBottom: '0.7rem'}} className='col-12 col-sm-6'>
                                                             <button title={claimTitle} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
-                                                                CLAIM AS WAVAX
+                                                                CLAIM
                                                             </button>
                                                         </div>
                                                         <div style={{ marginBottom: '0.7rem' }} className='col-12 col-sm-6'>
@@ -869,20 +902,23 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                                 e.preventDefault()
                                                                 this.handleClaimDyp()
                                                             }} title={claimTitle} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
-                                                                CLAIM DYP
+                                                                CLAIM
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div className='row'>
-                                                        <div className='col-12 col-sm-6'>
-                                                            <button onClick={e => {
-                                                                e.preventDefault()
-                                                                this.handleClaimAsDivs(window.config.claim_as_eth_address)
-                                                            }} className='btn  btn-primary btn-block l-outline-btn' type='button'>
-                                                                CLAIM AS ETH
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                    {/*<div className='row'>*/}
+                                                    {/*    <div className='col-12 col-sm-6'>*/}
+                                                    {/*        <button onClick={e => {*/}
+                                                    {/*            e.preventDefault()*/}
+                                                    {/*            this.handleClaimAsDivs(window.config.claim_as_eth_address)*/}
+                                                    {/*        }} className='btn  btn-primary btn-block l-outline-btn' type='button'>*/}
+                                                    {/*            CLAIM AS ETH*/}
+                                                    {/*        </button>*/}
+                                                    {/*    </div>*/}
+                                                    {/*</div>*/}
+
+
+
                                                     {/*<button onClick={this.handleClaimAsDivs(window.config.claim_as_eth_address)} className='btn  btn-primary btn-block l-outline-btn' type='button'>*/}
                                                     {/*    CLAIM AS ETH*/}
                                                     {/*</button>*/}

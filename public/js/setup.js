@@ -3026,7 +3026,7 @@ class STAKING {
 			this[fn_name] = async function(...args) {
 				let contract = await getContract(this.ticker)
 				let value = 0;
-				console.log(value)
+				//console.log(value)
 				// let gas = window.config.default_gas_amount
 				// try {
 				// 	let estimatedGas = await contract.methods[fn_name](...args).estimateGas({ gas })
