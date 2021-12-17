@@ -957,7 +957,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     <p>
                                                         Approx. ${getFormattedNumber(this.getApproxReturnUSD(), 2)} USD ({getFormattedNumber(this.getApproxReturnUSD()/this.getUsdPerETH(), 6)} WAVAX)
                                                     </p>
-                                                    <p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted'>Approx. Value Not Considering Burns</p>
+                                                    {/*<p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted'>Approx. Value Not Considering Burns</p>*/}
                                                 </form>
                                             </div>
                                         </div>
@@ -1053,17 +1053,17 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                     <th>To be burnt / disbursed</th>
                                                     <td className="text-right"><strong>{tokensToBeDisbursedOrBurnt}</strong> <small>iDYP</small></td>
                                                 </tr>
-                                                <tr>
-                                                    <th>APY (AT NO BURN)</th>
-                                                    <td className="text-right"><strong>
-                                                        {apy == 0 ? (
-                                                            <Dots />
-                                                        ) : (
-                                                            apy
-                                                        )
-                                                        }
-                                                    </strong> <small>%</small></td>
-                                                </tr>
+                                                {/*<tr>*/}
+                                                {/*    <th>APY (AT NO BURN)</th>*/}
+                                                {/*    <td className="text-right"><strong>*/}
+                                                {/*        {apy == 0 ? (*/}
+                                                {/*            <Dots />*/}
+                                                {/*        ) : (*/}
+                                                {/*            apy*/}
+                                                {/*        )*/}
+                                                {/*        }*/}
+                                                {/*    </strong> <small>%</small></td>*/}
+                                                {/*</tr>*/}
                                                 <tr>
                                                     <th>TVL USD</th>
                                                     <td className="text-right"><strong>${tvl_usd}</strong> <small>USD</small></td>
