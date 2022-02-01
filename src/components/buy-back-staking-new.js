@@ -689,7 +689,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                             number: '$'+tvl_usd
                                         },
                                         {
-                                            title: `APY`,
+                                            title: `APR`,
                                             number: getFormattedNumber(apy, 2)+'%'
                                         }
                                     ]} />

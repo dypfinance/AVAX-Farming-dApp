@@ -615,7 +615,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                             number: '$'+tvl_usd
                                         },
                                         {
-                                            title: `APY`,
+                                            title: `APR`,
                                             number: getFormattedNumber(this.state.apy, 2)+'%'
                                         }
                                     ]} />
