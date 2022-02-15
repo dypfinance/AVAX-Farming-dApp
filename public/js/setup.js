@@ -99,9 +99,9 @@ window.config = {
 	lp_amplify_factor: 1e0,
 
 	//Vesting Buyers
-	constant_staking_30_address: '0xf01b48f894cf68e9d238138d6e281efa8ea511a2',
+	constant_staking_30_address: '0x073dc8ff1b51ad420c5a9eb3c1411ac2be02313b',
 	//Staking Buyers
-	constant_staking_60_address: '0xfa5f5eb2398a41dc63c0eb671993497ff843e7f7',
+	constant_staking_60_address: '0xD9bCF07a6b98D8254584C6175117a030879d4994',
 
 	//Vesting Airdrop
 	constant_staking_90_address: '0x997A7254E5567d0A70329DEFCc1E4d29d71Ba224',
