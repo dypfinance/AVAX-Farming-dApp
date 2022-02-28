@@ -376,7 +376,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
             console.log({referralFee, _amountOutMin, deadline})
 
-            staking.reInvest(0, _amountOutMin, deadline)
+            staking.reInvest(0, 0, deadline)
         }
 
         render() {
