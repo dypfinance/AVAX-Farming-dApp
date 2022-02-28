@@ -108,6 +108,9 @@ window.config = {
 	//Staking Airdrop
 	constant_staking_120_address: '0x90D0D2CA6D962aC87d884f1095d1c1C5F3DD2B5D',
 
+	//Vesting Private
+	constant_staking_130_address: '0x619613733CFf2Ea82023389B9D04040b402833fA',
+
 	USDCe_address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
 
 	//constant staking New
@@ -3285,6 +3288,8 @@ window.constant_staking_60 = new CONSTANT_STAKING("CONSTANT_STAKING_60")
 
 window.constant_staking_90 = new CONSTANT_STAKING("CONSTANT_STAKING_90")
 window.constant_staking_120 = new CONSTANT_STAKING("CONSTANT_STAKING_120")
+
+window.constant_staking_130 = new CONSTANT_STAKING("CONSTANT_STAKING_130")
 
 //constant staking NEW CONTRACTS
 window.constant_staking_new1 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW1")

@@ -495,7 +495,7 @@ export default function initVesting({ staking, buyers, apr, liquidity='ETH', loc
                                             <div className='l-box'>
                                                 <form onSubmit={this.handleClaimDivs}>
                                                     <div className='form-group'>
-                                                        <label htmlFor='deposit-amount' className='text-left d-block'>REWARDS</label>
+                                                        <label htmlFor='deposit-amount' className='text-left d-block'>TOKENS</label>
                                                         <div className='form-row'>
                                                             {/* <div className='col-md-6'>
                                                         <p className='form-control  text-right' style={{ border: 'none', marginBottom: 0, paddingLeft: 0, background: 'transparent', color: '#222' }}><span style={{ fontSize: '1.2rem', color: 'rgb(255, 0, 122)' }}>{pendingDivsEth}</span> <small className='text-bold'>WETH</small></p>

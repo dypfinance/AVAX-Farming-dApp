@@ -40,8 +40,8 @@ const Staking90 = initStaking({token: window.token_dyp_90, staking: window.staki
 
 
 const eth_address = 'ETH'
-const Vesting = initVesting({ staking: window.constant_staking_30, buyers: true, apr: 0, liquidity: eth_address, expiration_time: '16 February 2022' })
-const VestingStaking = initVestingStaking({ staking: window.constant_staking_60, apr: 0, liquidity: eth_address, expiration_time: '16 February 2022' })
+const Vesting = initVesting({ staking: window.constant_staking_30, buyers: true, apr: 0, liquidity: eth_address, expiration_time: '16 April 2022' })
+const VestingStaking = initVestingStaking({ staking: window.constant_staking_60, apr: 0, liquidity: eth_address, expiration_time: '16 April 2022' })
 const VestingAirdrop = initVesting({ staking: window.constant_staking_90, buyers: false, apr: 0, liquidity: eth_address, expiration_time: '23 November 2022' })
 const VestingStakingAirdrop = initVestingStaking({ staking: window.constant_staking_120, apr: 0, liquidity: eth_address, expiration_time: '23 November 2022' })
 
@@ -61,6 +61,9 @@ const StakingNew2 = initStakingNew({token: window.token_new, staking: window.far
 const StakingNew3 = initStakingNew({token: window.token_new, staking: window.farming_new_3, constant: window.constant_staking_new7, liquidity: wbnb_address, lp_symbol:'USD', reward: '30,000', lock: '3 Days', rebase_factor: rebase_factors[0], expiration_time: '6 December 2022'})
 const StakingNew4 = initStakingNew({token: window.token_new, staking: window.farming_new_4, constant: window.constant_staking_new8, liquidity: wbnb_address, lp_symbol:'USD', reward: '30,000', lock: '3 Days', rebase_factor: rebase_factors[0], expiration_time: '6 December 2022'})
 const StakingNew5 = initStakingNew({token: window.token_new, staking: window.farming_new_5, constant: window.constant_staking_new9, liquidity: wbnb_address, lp_symbol:'USD', reward: '30,000', lock: '3 Days', rebase_factor: rebase_factors[0], expiration_time: '6 December 2022'})
+
+//Vesting Private
+const VestingPrivate = initVestingStaking({ staking: window.constant_staking_130, apr: 0, liquidity: eth_address, expiration_time: '28 May 2022' })
 
 const Modal = ({ handleClose, show, children }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -342,6 +345,8 @@ render() {
       <Route exact path='/farming-new-3' render={props => <StakingNew3 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[2]} {...props} />} />
       <Route exact path='/farming-new-4' render={props => <StakingNew4 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[3]} {...props} />} />
       <Route exact path='/farming-new-5' render={props => <StakingNew5 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
+
+      <Route exact path='/avaxvst-private' render={props => <VestingPrivate the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
       {/*<Route exact path='/' render={props => <StakingList tvl_all={getFormattedNumber(this.getCombinedTvlUsd(), 2)} tvl_farming={getFormattedNumber(this.getTvlFarming(), 2)} {...props} />} />*/}
       </div>
