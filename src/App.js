@@ -11,6 +11,7 @@ import initVestingStaking from "./components/vesting-staking"
 import initConstantStaking from './components/constant-staking'
 import initBuybackStakingNew from './components/buy-back-staking-new'
 import initStakingNew from './components/staking-new'
+import initConstantStakingiDYP from './components/constant-staking-idyp'
 
 import StakingList from './components/staking-list'
 import StakingListEth from './components/staking-list-eth.js'
@@ -64,6 +65,11 @@ const StakingNew5 = initStakingNew({token: window.token_new, staking: window.far
 
 //Vesting Private
 const VestingPrivate = initVestingStaking({ staking: window.constant_staking_130, apr: 0, liquidity: eth_address, expiration_time: '28 May 2022' })
+
+//Constant Staking iDYP
+const ConstantStakingiDYP1 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_1, apr: 20, liquidity: avax_address, expiration_time: '28 February 2023' })
+const ConstantStakingiDYP2 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_2, apr: 45, liquidity: avax_address, expiration_time: '28 February 2023' })
+
 
 const Modal = ({ handleClose, show, children }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
@@ -347,6 +353,9 @@ render() {
       <Route exact path='/farming-new-5' render={props => <StakingNew5 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
 
       <Route exact path='/avaxvst-private' render={props => <VestingPrivate the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+
+      <Route exact path='/staking-idyp-1' render={props => <ConstantStakingiDYP1 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/staking-idyp-2' render={props => <ConstantStakingiDYP2 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*<Route exact path='/' render={props => <StakingList tvl_all={getFormattedNumber(this.getCombinedTvlUsd(), 2)} tvl_farming={getFormattedNumber(this.getTvlFarming(), 2)} {...props} />} />*/}
       </div>
