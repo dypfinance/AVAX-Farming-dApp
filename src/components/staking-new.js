@@ -7,7 +7,7 @@ import Dots from "./elements/dots";
 
 export default function initStakingNew({token, staking, constant, liquidity, lp_symbol, reward, lock, rebase_factor, expiration_time}) {
 
-    let {reward_token, BigNumber, alertify, reward_token_idyp} = window
+    let {reward_token, BigNumber, alertify, reward_token_idyp, token_dyps} = window
 
     // token, staking
 
@@ -435,6 +435,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
 
             let lp_data = this.props.the_graph_result.lp_data
 
+            let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
+
             try {
                 let amount = new BigNumber(1000000000000000000).toFixed(0)
                 let router = await window.getPangolinRouterContract()
@@ -465,11 +467,16 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 let _dTokensDYP = constant.depositedTokens(coinbase)
                 let _pendingDivsStaking = constant.getTotalPendingDivs(coinbase)
 
+                //Take DYPS Balance
+                let _tvlDYPS = token_dyps.balanceOf(staking._address) /* TVL of DYPS */
+
                 let [token_balance,reward_token_balance, pendingDivs, totalEarnedTokens, stakingTime,
                     depositedTokens, lastClaimedTime, tvl,
-                    totalEarnedEth, pendingDivsEth, tvlConstantiDYP, tvlConstantDYP, tvliDYP, depositedTokensDYP, pendingDivsStaking
+                    totalEarnedEth, pendingDivsEth, tvlConstantiDYP, tvlConstantDYP, tvliDYP, depositedTokensDYP,
+                    pendingDivsStaking, tvlDYPS
                 ] = await Promise.all([_bal, _rBal, _pDivs, _tEarned, _stakingTime, _dTokens, _lClaimTime, _tvl,
-                    _tEarnedEth, _pDivsEth, _tvlConstantiDYP, _tvlConstantDYP, _tvliDYP, _dTokensDYP, _pendingDivsStaking])
+                    _tEarnedEth, _pDivsEth, _tvlConstantiDYP, _tvlConstantDYP, _tvliDYP, _dTokensDYP,
+                    _pendingDivsStaking, _tvlDYPS])
 
 
                 let tvlValueConstantDYP = new BigNumber(depositedTokensDYP).times(this.state.usdPerToken).toFixed(18)
@@ -493,6 +500,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 let totalValueLocked = new BigNumber(tvlUSD).plus(tvlValueiDYP).plus(tvlValueiDYPFarming).plus(tvlValueConstantDYP).toFixed(18)
                 //console.log({tvlValueConstantDYP})
 
+                let tvlDyps = new BigNumber(tvlDYPS).times(usd_per_dyps).toFixed(18)
+
                 this.setState({
                     token_balance,
                     reward_token_balance,
@@ -502,6 +511,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                     depositedTokens,
                     lastClaimedTime,
                     tvl,
+                    tvlDyps,
                     totalEarnedEth,
                     pendingDivsEth,
                     myDepositedLpTokens,
@@ -677,8 +687,11 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
             let tvl_usd = this.state.totalValueLocked / 1e18
 
             apy = getFormattedNumber(apy, 2)
-            tvl_usd = getFormattedNumber(tvl_usd, 2)
             total_stakers = getFormattedNumber(total_stakers, 0)
+
+            let tvlDYPS = this.state.tvlDyps / 1e18
+            tvl_usd = tvl_usd + tvlDYPS
+            tvl_usd = getFormattedNumber(tvl_usd, 2)
 
             //console.log(total_stakers)
 
@@ -994,12 +1007,12 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                                         <Address style={{fontFamily: 'monospace', fontSize: '16px'}} a={coinbase} />
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <th>Contract Address</th>
-                                                    <td className='text-right'>
-                                                        <Address style={{fontFamily: 'monospace', fontSize: '16px'}} a={staking._address} />
-                                                    </td>
-                                                </tr>
+                                                {/*<tr>*/}
+                                                {/*    <th>Contract Address</th>*/}
+                                                {/*    <td className='text-right'>*/}
+                                                {/*        <Address style={{fontFamily: 'monospace', fontSize: '16px'}} a={staking._address} />*/}
+                                                {/*    </td>*/}
+                                                {/*</tr>*/}
                                                 <tr>
                                                     <th>Contract Expiration</th>
                                                     <td className="text-right"><strong>{expiration_time}</strong></td>

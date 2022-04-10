@@ -166,7 +166,9 @@ window.config = {
 	slippage_tolerance_percent: 3, // 3% slippage tolerance
 	tx_max_wait_seconds: 20 * 60, // 20 mins - deposit and withdraw tx will fail (swap will fail) after this duration of being pending
 	uniswap_router_address: '0xe54ca86531e17ef3616d22ca28b0d458b6c89106',
-	pangolin_router_address: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106'
+	pangolin_router_address: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
+
+	reward_token_dyps_address: '0x4689545A1389E7778Fd4e66F854C91Bf8aBacBA9'
 }
 
 // add buyback supported deposit tokens here, lowercase
@@ -3274,6 +3276,10 @@ window.token = new TOKEN
 window.staking = new STAKING
 window.reward_token = new TOKEN("REWARD_TOKEN")
 window.reward_token_idyp = new TOKEN("REWARD_TOKEN_IDYP")
+
+window.REWARD_TOKEN_DYPS_ABI = window.TOKEN_ABI
+window.token_dyps = new TOKEN("REWARD_TOKEN_DYPS")
+
 window.weth = new TOKEN("WETH")
 
 window.token_dyp_30 = new TOKEN("TOKEN_DYP30")
