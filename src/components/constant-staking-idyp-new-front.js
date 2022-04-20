@@ -10,6 +10,7 @@ import Popup from "./popup";
 import Tooltip from "@material-ui/core/Tooltip";
 import {Button} from "@material-ui/core";
 import Modal from "./modal";
+import Dots from "./elements/dots";
 
 export default function initStaking({ staking, apr, liquidity='ETH', lock, expiration_time }) {
 
@@ -91,7 +92,9 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
                 show: false,
                 popup: false,
-                is_wallet_connected: false
+                is_wallet_connected: false,
+                apy1: 0,
+                apy2: 0
 
             }
 
@@ -157,6 +160,18 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
         componentDidMount() {
             this.refreshBalance()
             window._refreshBalInterval = setInterval(this.refreshBalance, 3000)
+
+            this.getTotalTvl().then()
+        }
+
+        getTotalTvl = async () => {
+
+            let apy1 = 20
+
+            let apy2 = 45
+
+            this.setState({apy1, apy2})
+
         }
 
         componentWillUnmount() {
@@ -393,46 +408,40 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
-                                        <p className='h3'><b>Maximize your Yield Farming Rewards</b></p>
-                                        <p>Automatically adds liquidity to
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip1}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    PancakeSwap V2 & deposit to Staking </Button>
-                                            </Tooltip>
-                                            contract using one asset. To start earning, all you need is to deposit
-                                            one of the supported assets (WBNB, BTCB, ETH, BUSD, CAKE, or iDYP) and earn
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)', padding: '4px 0px 2px 5px'}}>
-                                                    WBNB/ETH/DYP as rewards.</Button>
-                                            </Tooltip>
-                                        </p>
-                                        <p>All pool rewards are automatically converted from iDYP to WBNB by the
-                                            smart contract, decreasing the risk of iDYP price volatility.
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    WBNB/ETH + DYP </Button>
-                                            </Tooltip>
-                                            is a double reward to the liquidity providers. The users can
-                                            choose between two different types of rewards: WBNB or ETH. Maintaining
-                                            token price stability — every 24 hours, the smart contract will
-                                            automatically try converting the iDYP rewards to WBNB. If the iDYP
-                                            price is affected by more than
-                                            <img src='/img/arrow.svg' alt="images not found" />2.5%, then the
-                                            maximum iDYP amount not influencing the price will be swapped to WBNB,
-                                            with the remaining amount distributed in the next day’s rewards. After
-                                            seven days, if we still have undistributed iDYP rewards, the DeFi Yield
-                                            Protocol governance will vote on whether the remaining iDYP will be
-                                            distributed to the token holders or burned (all burned tokens are out
-                                            of circulation).</p>
-                                        <p>You will receive the total amount in the initial deposit asset with
-                                            withdrawal by burning LP tokens when you unstake.</p>
+                                        <p className='h3'><b>Earn more iDYP</b></p>
+                                        <p>Stake your iDYP tokens and earn {this.state.apy2 == 0 ? (
+                                            <Dots />
+                                        ) : (
+                                            getFormattedNumber(this.state.apy2,0)
+                                        )
+                                        }% APR. No Impermanent Loss.</p>
+                                        <p>To start earning, all you need is to deposit iDYP tokens into the Staking
+                                            contract. You can choose from two different staking options, with
+                                            rewards starting from {this.state.apy1 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apy1,0)
+                                            )
+                                            }% APR up to {this.state.apy2 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apy2,0)
+                                            )
+                                            }% APR, depending on the lock time
+                                            from a minimum of zero-days up to a maximum of 90 days.</p>
+                                        <p>The staking pools have the REINVEST function integrated, meaning that
+                                            you can automatically add your daily rewards to the staking pool.
+                                            Moreover, the iDYP Referral is available. If you refer iDYP to your
+                                            friends, 5% of your friends’ rewards will automatically be sent to you
+                                            whenever your friends stake iDYP. You do not need to stake, it will’ be
+                                            automatically sent to you, free of gas fee.</p>
                                     </div>
 
                                 </Popup>
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
                                     <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >Farming pool</p>
+                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >iDYP pool</p>
                                     </div>
                                     <div className='col-6' style={{marginBottom: '27px'}}>
                                         <div className='row'>

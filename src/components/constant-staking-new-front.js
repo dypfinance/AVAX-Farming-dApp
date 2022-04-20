@@ -10,6 +10,7 @@ import Popup from "./popup";
 import Tooltip from "@material-ui/core/Tooltip";
 import {Button} from "@material-ui/core";
 import Modal from "./modal";
+import Dots from "./elements/dots";
 
 export default function initStaking({ staking, apr, liquidity='ETH', lock, expiration_time }) {
 
@@ -92,7 +93,9 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                 apy: 0,
                 show: false,
                 popup: false,
-                is_wallet_connected: false
+                is_wallet_connected: false,
+                apy1: 0,
+                apy2: 0
 
             }
 
@@ -160,6 +163,22 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
             window._refreshBalInterval = setInterval(this.refreshBalance, 3000)
 
             this.getPriceDYP()
+            this.getTotalTvl().then()
+        }
+
+        getTotalTvl = async () =>
+        {
+            let { the_graph_result } = this.props
+            let usd_per_token = the_graph_result.token_data ? the_graph_result.token_data["0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17"].token_price_usd : 1
+            let usd_per_idyp = the_graph_result.token_data ? the_graph_result.token_data["0xbd100d061e120b2c67a24453cf6368e63f1be056"].token_price_usd : 1
+
+            let apr1 = 25
+            let apr2 = 50
+            let apy1 = new BigNumber(apr1).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
+
+            let apy2 = new BigNumber(apr2).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
+
+            this.setState({apy1, apy2})
         }
 
         getPriceDYP = async () => {
@@ -495,17 +514,9 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                 is_connected = true
             }
 
-            let infoItems = [
-                "75% from your deposit is added to PancakeSwap V2 BNB/iDYP LP",
-                "25% from your deposit is sent to DYP Staking with % APR"
-            ]
-            let tooltip1 = infoItems.join('\n')
 
-            let infoItems2 = [
-                "75% WBNB/ETH rewards",
-                "25% DYP rewards"
-            ]
-            let tooltip2 = infoItems2.join('\n')
+
+
 
             // let apy = new BigNumber(apr).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
 
@@ -518,46 +529,40 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
-                                        <p className='h3'><b>Maximize your Yield Farming Rewards</b></p>
-                                        <p>Automatically adds liquidity to
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip1}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    PancakeSwap V2 & deposit to Staking </Button>
-                                            </Tooltip>
-                                            contract using one asset. To start earning, all you need is to deposit
-                                            one of the supported assets (WBNB, BTCB, ETH, BUSD, CAKE, or iDYP) and earn
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)', padding: '4px 0px 2px 5px'}}>
-                                                    WBNB/ETH/DYP as rewards.</Button>
-                                            </Tooltip>
-                                        </p>
-                                        <p>All pool rewards are automatically converted from iDYP to WBNB by the
-                                            smart contract, decreasing the risk of iDYP price volatility.
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    WBNB/ETH + DYP </Button>
-                                            </Tooltip>
-                                            is a double reward to the liquidity providers. The users can
-                                            choose between two different types of rewards: WBNB or ETH. Maintaining
-                                            token price stability — every 24 hours, the smart contract will
-                                            automatically try converting the iDYP rewards to WBNB. If the iDYP
-                                            price is affected by more than
-                                            <img src='/img/arrow.svg' alt="images not found" />2.5%, then the
-                                            maximum iDYP amount not influencing the price will be swapped to WBNB,
-                                            with the remaining amount distributed in the next day’s rewards. After
-                                            seven days, if we still have undistributed iDYP rewards, the DeFi Yield
-                                            Protocol governance will vote on whether the remaining iDYP will be
-                                            distributed to the token holders or burned (all burned tokens are out
-                                            of circulation).</p>
-                                        <p>You will receive the total amount in the initial deposit asset with
-                                            withdrawal by burning LP tokens when you unstake.</p>
+                                        <p className='h3'><b>Earn more DYP</b></p>
+                                        <p>Stake your DYP tokens and earn {this.state.apy2 == 0 ? (
+                                            <Dots />
+                                        ) : (
+                                            getFormattedNumber(this.state.apy2,0)
+                                        )
+                                        }% APR. No Impermanent Loss.</p>
+                                        <p>To start earning, all you need is to deposit DYP tokens into the Staking
+                                            contract. You can choose from two different staking options, with
+                                            rewards starting from {this.state.apy1 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apy1,0)
+                                            )
+                                            }% APR up to {this.state.apy2 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apy2,0)
+                                            )
+                                            }% APR, depending on the lock time
+                                            from a minimum of zero-days up to a maximum of 90 days.</p>
+                                        <p>The staking pools have the REINVEST function integrated, meaning that
+                                            you can automatically add your daily rewards to the staking pool.
+                                            Moreover, the DYP Referral is available. If you refer DYP to your
+                                            friends, 5% of your friends’ rewards will automatically be sent to you
+                                            whenever your friends stake DYP. You do not need to stake, it will’ be
+                                            automatically sent to you, free of gas fee.</p>
                                     </div>
 
                                 </Popup>
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
                                     <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >Farming pool</p>
+                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >Staking pool</p>
                                     </div>
                                     <div className='col-6' style={{marginBottom: '27px'}}>
                                         <div className='row'>
@@ -570,7 +575,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                 </button>
                                             </div>
                                             <div style={{paddingLeft: '20px'}} className='col-6'>
-                                                <button className onClick={()=> window.open("https://www.youtube.com/watch?v=2pOUmRTMN1o", "_blank")}
+                                                <button className onClick={()=> window.open("https://www.youtube.com/watch?v=s9gwo3J119U&t=5s", "_blank")}
                                                         className='btn  btn-block btn-primary l-outline-btn button'
                                                         type='submit'>
                                                     <img src="img/icon/video.svg" style={{float: 'left'}}

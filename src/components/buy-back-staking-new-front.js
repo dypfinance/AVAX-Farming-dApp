@@ -10,6 +10,7 @@ import Popup from "./popup";
 import Tooltip from "@material-ui/core/Tooltip";
 import {Button} from "@material-ui/core";
 import Modal from "./modal";
+import Dots from "./elements/dots";
 
 export default function initStaking({ staking, constant, apr, lock, expiration_time }) {
 
@@ -95,7 +96,12 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
 
                 show: false,
                 popup: false,
-                is_wallet_connected: false
+                is_wallet_connected: false,
+                tvlTotal: 0,
+                tvlTotalBuyback1: 0,
+                tvlTotalBuyback2: 0,
+                apyBuyback1: 0,
+                apyBuyback2: 0
             }
 
             this.showModal = this.showModal.bind(this)
@@ -170,6 +176,30 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
             window._refreshBalInterval = setInterval(this.refreshBalance, 3000)
 
             this.getPriceDYP()
+
+            this.getTotalTvl().then()
+        }
+
+        getTotalTvl = async () =>
+        {
+
+
+            let usd_per_token = this.props.the_graph_result.token_data ? this.props.the_graph_result.token_data["0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17"].token_price_usd : 1
+            let usd_per_idyp = this.props.the_graph_result.token_data ? this.props.the_graph_result.token_data["0xbd100d061e120b2c67a24453cf6368e63f1be056"].token_price_usd : 1
+
+            //apr is 30%
+            let apy1_buyback1 = new BigNumber(0.225)
+            let apy2_buyback1 = new BigNumber(0.25).div(usd_per_token).times(30).div(1e2).times(usd_per_idyp)
+
+            // APR is 100% considering 1$ as initial investment, 0.75$ goes to Buyback
+            let apy1_buyback2 = new BigNumber(0.75)
+            let apy2_buyback2 = new BigNumber(0.25).div(usd_per_token).times(usd_per_idyp)
+
+            let apyBuyback1 = new BigNumber(apy1_buyback1).plus(apy2_buyback1).times(1e2).toFixed(0)
+            let apyBuyback2 = new BigNumber(apy1_buyback2).plus(apy2_buyback2).times(1e2).toFixed(0)
+
+            this.setState({apyBuyback1, apyBuyback2})
+
         }
 
         getPriceDYP = async () => {
@@ -593,46 +623,39 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
-                                        <p className='h3'><b>Maximize your Yield Farming Rewards</b></p>
-                                        <p>Automatically adds liquidity to
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip1}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    PancakeSwap V2 & deposit to Staking </Button>
-                                            </Tooltip>
-                                            contract using one asset. To start earning, all you need is to deposit
-                                            one of the supported assets (WBNB, BTCB, ETH, BUSD, CAKE, or iDYP) and earn
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)', padding: '4px 0px 2px 5px'}}>
-                                                    WBNB/ETH/DYP as rewards.</Button>
-                                            </Tooltip>
-                                        </p>
-                                        <p>All pool rewards are automatically converted from iDYP to WBNB by the
-                                            smart contract, decreasing the risk of iDYP price volatility.
-                                            <Tooltip placement="top" title={<div style={{ whiteSpace: 'pre-line' }}>{tooltip2}</div>}>
-                                                <Button style={{fontSize: '70%', textDecoration: 'underline', color:  'var(--color_white)'}}>
-                                                    WBNB/ETH + DYP </Button>
-                                            </Tooltip>
-                                            is a double reward to the liquidity providers. The users can
-                                            choose between two different types of rewards: WBNB or ETH. Maintaining
-                                            token price stability — every 24 hours, the smart contract will
-                                            automatically try converting the iDYP rewards to WBNB. If the iDYP
-                                            price is affected by more than
-                                            <img src='/img/arrow.svg' alt="images not found" />2.5%, then the
-                                            maximum iDYP amount not influencing the price will be swapped to WBNB,
-                                            with the remaining amount distributed in the next day’s rewards. After
-                                            seven days, if we still have undistributed iDYP rewards, the DeFi Yield
-                                            Protocol governance will vote on whether the remaining iDYP will be
-                                            distributed to the token holders or burned (all burned tokens are out
-                                            of circulation).</p>
-                                        <p>You will receive the total amount in the initial deposit asset with
-                                            withdrawal by burning LP tokens when you unstake.</p>
+                                        <p className='h3'><b>DYP Buyback</b></p>
+                                        <p>Deposit WAVAX, USDC.e, USDT.e, WETH.e, PNG, QI, DAI.e, XAVA, WBTC.e, or LINK.e, and earn {' '}
+                                            {this.state.apyBuyback2 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apyBuyback2,0)
+                                            )
+                                            }% APR in DYP.
+                                            To start earning, all you need is to deposit one of the supported
+                                            assets into the Buyback contract. Then, all assets will automatically
+                                            be converted into DYP + iDYP and deposited into a staking contract.
+                                            You can choose from two different options, with rewards starting from {' '}
+                                            {this.state.apyBuyback1 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apyBuyback1,0)
+                                            )
+                                            }% APR up to {this.state.apyBuyback2 == 0 ? (
+                                                <Dots />
+                                            ) : (
+                                                getFormattedNumber(this.state.apyBuyback2,0)
+                                            )
+                                            }% APR, depending on the lock time from a minimum of
+                                            zero-days up to a maximum of 90 days.</p>
+                                        <p>The rewards are distributed automatically and can be claimed every day.
+                                            When you unstake you will receive all the deposited amounts in DYP.</p>
                                     </div>
 
                                 </Popup>
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
                                     <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >Farming pool</p>
+                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >DYP Buyback Pool</p>
                                     </div>
                                     <div className='col-6' style={{marginBottom: '27px'}}>
                                         <div className='row'>
@@ -645,7 +668,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                                 </button>
                                             </div>
                                             <div style={{paddingLeft: '20px'}} className='col-6'>
-                                                <button className onClick={()=> window.open("https://www.youtube.com/watch?v=2pOUmRTMN1o", "_blank")}
+                                                <button className onClick={()=> window.open("https://www.youtube.com/watch?v=_WuIQUwwpGM&t=10s", "_blank")}
                                                         className='btn  btn-block btn-primary l-outline-btn button'
                                                         type='submit'>
                                                     <img src="img/icon/video.svg" style={{float: 'left'}}
