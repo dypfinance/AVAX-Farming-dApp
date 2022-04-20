@@ -113,6 +113,7 @@ class App extends React.Component {
       this.hideModal = this.hideModal.bind(this)
   }
 
+
     showModal = () => {
         this.setState({ show: true })
     }
@@ -126,6 +127,30 @@ class App extends React.Component {
     document.body.classList[darkTheme?'add':'remove']('dark')
     this.setState({ darkTheme })
   }
+
+  componentDidMount() {
+
+      this.tvl().then()
+  }
+
+    tvl = async () => {
+      try {
+          let the_graph_result_AVAX_V2 = await window.get_the_graph_avax_v2()
+          this.setState({ the_graph_result_AVAX_V2: JSON.parse(JSON.stringify(the_graph_result_AVAX_V2)) })
+      } catch (e) {
+          // window.alertify.error("Cannot fetch TVL");
+          console.error("TVL AVAX V2 error: "+e)
+      }
+
+      try {
+          let the_graph_result = await window.refresh_the_graph_result()
+          this.setState({ the_graph_result: JSON.parse(JSON.stringify(the_graph_result)) })
+      } catch (e) {
+          // window.alertify.error("Cannot fetch TVL");
+          console.error("Cannot fetch TVL: "+e)
+      }
+  }
+
   getCombinedTvlUsd = () => {
       let tvl = 0
       if (!this.state.the_graph_result.lp_data) return 0

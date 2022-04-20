@@ -506,9 +506,9 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className='col-6'>
+                                            <div className='col-lg-6 col-xs-12'>
                                                 <div className='row token-staking-form'>
-                                                    <div className="col-12">
+                                                    <div className="col-12 padding-mobile">
                                                         <div className="" style={{background: 'linear-gradient(257.76deg, #E84142 6.29%, #CB2627 93.71%)',
                                                             boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.06)', borderRadius: '6px', paddingLeft: '5px', padding: '10px'}}>
                                                             <div className="row">

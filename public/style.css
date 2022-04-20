@@ -328,6 +328,11 @@ Medium Screen - Others
         .social-list ul li a {
             font-size: 16px;
         }
+
+        .padding-mobile
+        {
+            padding-bottom: 30px;
+        }
     }
     
     /*
@@ -360,6 +365,11 @@ Medium Screen - Others
         }
         .social-list ul li a {
             font-size: 16px;
+        }
+
+        .padding-mobile
+        {
+            padding-bottom: 30px;
         }
     }
     
@@ -405,6 +415,11 @@ Medium Screen - Others
     
         .social-list ul li a {
             font-size: 16px;
+        }
+
+        .padding-mobile
+        {
+            padding-bottom: 30px;
         }
     }
 
