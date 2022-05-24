@@ -8,10 +8,16 @@ import initVesting from './components/vesting'
 import initVestingStaking from "./components/vesting-staking"
 
 /* New Contracts */
-import initConstantStaking from './components/constant-staking'
-import initBuybackStakingNew from './components/buy-back-staking-new'
-import initStakingNew from './components/staking-new'
-import initConstantStakingiDYP from './components/constant-staking-idyp'
+// import initConstantStaking from './components/constant-staking'
+import initConstantStaking from './components/constant-staking-new-front'
+// import initBuybackStakingNew from './components/buy-back-staking-new'
+
+import initBuybackStakingNew from './components/buy-back-staking-new-front'
+
+// import initStakingNew from './components/staking-new'
+import initStakingNew from './components/staking-new-front'
+// import initConstantStakingiDYP from './components/constant-staking-idyp'
+import initConstantStakingiDYP from './components/constant-staking-idyp-new-front'
 
 import initConstantStakingDai from './components/constant-staking-dai'
 
@@ -112,6 +118,7 @@ class App extends React.Component {
       this.hideModal = this.hideModal.bind(this)
   }
 
+
     showModal = () => {
         this.setState({ show: true })
     }
@@ -125,6 +132,30 @@ class App extends React.Component {
     document.body.classList[darkTheme?'add':'remove']('dark')
     this.setState({ darkTheme })
   }
+
+  componentDidMount() {
+
+      this.tvl().then()
+  }
+
+    tvl = async () => {
+      try {
+          let the_graph_result_AVAX_V2 = await window.get_the_graph_avax_v2()
+          this.setState({ the_graph_result_AVAX_V2: JSON.parse(JSON.stringify(the_graph_result_AVAX_V2)) })
+      } catch (e) {
+          // window.alertify.error("Cannot fetch TVL");
+          console.error("TVL AVAX V2 error: "+e)
+      }
+
+      try {
+          let the_graph_result = await window.refresh_the_graph_result()
+          this.setState({ the_graph_result: JSON.parse(JSON.stringify(the_graph_result)) })
+      } catch (e) {
+          // window.alertify.error("Cannot fetch TVL");
+          console.error("Cannot fetch TVL: "+e)
+      }
+  }
+
   getCombinedTvlUsd = () => {
       let tvl = 0
       if (!this.state.the_graph_result.lp_data) return 0
@@ -236,137 +267,52 @@ class App extends React.Component {
 
 render() {
 
-    if (!this.state.is_wallet_connected) {
-        return (<div className='App text-center'>
-            <Header darkTheme={this.state.darkTheme} toggleTheme={this.toggleTheme} />
-            <div className='container App-container'>
-                <div className='mt-5'>
-                    <h3 className='mb-4'>Please connect wallet to use this dApp</h3>
-                    <Modal show={this.state.show} handleClose={this.hideModal}>
-                        <div className="sc-frDJqD ljXtWJ" data-reach-dialog-content="">
-                            <div className="sc-cmTdod kjSopy">
-                                <div className="sc-lhVmIH xuOEC">
-                                    <div className="sc-feJyhm iTaYul">
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                             stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                             strokeLinejoin="round" className="sc-iELTvK cvCpgS">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                        </svg>
-                                    </div>
-                                    <div className="sc-jwKygS bFQpTL">
-                                        <div className="sc-jtRfpW iudQQC">Connect to a wallet</div>
-                                    </div>
-                                    <div className="sc-btzYZH cRGnnt">
-                                        <div className="sc-elJkPf kIebhI">
-                                            <button onClick={this.handleConnection} id="connect-METAMASK"
-                                                    className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
-                                                <div className="sc-jbKcbu GeCum">
-                                                    <div color="#E8831D" className="sc-bbmXgH eDNUCi">MetaMask</div>
-                                                </div>
-                                                <div className="sc-jnlKLf gJPfsC">
-                                                    <img src="/img/wallets/metamask.svg" alt="Icon" />
-                                                </div>
-                                            </button>
-                                            <button onClick={this.handleConnectionWalletConnect} id="connect-WALLETCONNECT"
-                                                    className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
-                                                <div className="sc-jbKcbu GeCum">
-                                                    <div color="#E8831D" className="sc-bbmXgH eDNUCi">WalletConnect</div>
-                                                </div>
-                                                <div className="sc-jnlKLf gJPfsC">
-                                                    <img src="/img/wallets/walletConnect.svg" height={'25px'} alt="Icon" />
-                                                </div>
-                                            </button>
-                                            <button onClick={this.handleConnection} id="connect-COIN98" className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
-                                                <div className="sc-jbKcbu GeCum">
-                                                    <div color="#E8831D" className="sc-bbmXgH eDNUCi">Coin98</div>
-                                                </div>
-                                                <div className="sc-jnlKLf gJPfsC">
-                                                    <img src="/img/wallets/coin98.svg" alt="Icon" />
-                                                </div>
-                                            </button>
-                                            <button onClick={this.handleConnection} id="connect-COIN98" className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
-                                                <div className="sc-jbKcbu GeCum">
-                                                    <div color="#E8831D" className="sc-bbmXgH eDNUCi">Trust Wallet</div>
-                                                </div>
-                                                <div className="sc-jnlKLf gJPfsC">
-                                                    <img src="/img/wallets/trustwallet.svg" alt="Icon" />
-                                                </div>
-                                            </button>
-                                            <button onClick={this.handleConnection} id="connect-COIN98" className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
-                                                <div className="sc-jbKcbu GeCum">
-                                                    <div color="#E8831D" className="sc-bbmXgH eDNUCi">SafePal</div>
-                                                </div>
-                                                <div className="sc-jnlKLf gJPfsC">
-                                                    <img src="/img/wallets/safepal.svg" alt="Icon" />
-                                                </div>
-                                            </button>
-                                        </div>
-                                        {/*<div className="sc-bYSBpT cqlMyA"><span>New to Avalanche? &nbsp;</span> <a*/}
-                                        {/*    target="_blank" rel="noopener noreferrer"*/}
-                                        {/*    href="https://pangolin.exchange/tutorials/getting-started/#set-up-metamask"*/}
-                                        {/*    className="sc-ifAKCX jNdpwd sc-kTUwUJ kLByLx">Learn more about setting up a*/}
-                                        {/*    wallet</a></div>*/}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Modal>
-                    <button onClick={this.showModal} style={{borderRadius: '6px'}} className='btn btn-primary pr-5 pl-5'>
-                        CONNECT WALLET</button>
-                    {/*<button onClick={this.handleConnection} style={{borderRadius: '6px'}} className='btn btn-primary pr-5 pl-5'>*/}
-                    {/*    CONNECT WALLET</button>*/}
-                </div>
-            </div>
-            <Footer />
-        </div>);
-    }
   return (
     <div className="App App-header">
       <Header darkTheme={this.state.darkTheme} toggleTheme={this.toggleTheme} />
       <div style={{minHeight: '550px'}} className="App-container">
-      <Route exact path="/staking-stats" render={props => <StakingStats the_graph_result={this.state.the_graph_result} {...props} />} />
-      <Route exact path="/full-staking-stats" render={props => <FullStakingStats the_graph_result={this.state.the_graph_result} {...props} />} />
+      <Route exact path="/staking-stats" render={props => <StakingStats is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} {...props} />} />
+      <Route exact path="/full-staking-stats" render={props => <FullStakingStats is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} {...props} />} />
 
       {/*<Route exact path="/" render={props => <StakingListEth the_graph_result={this.state.the_graph_result} lp_id={[LP_IDs.eth[0], LP_IDs.eth[1], LP_IDs.eth[2], LP_IDs.eth[3]]} {...props} />} />*/}
-      <Route exact path='/' render={props => <StakingNew5 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
+      <Route exact path='/' render={props => <StakingNew5 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
 
 
-      <Route exact path="/staking-avax-3" render={props => <Staking3 the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[0]} {...props} />} />
-      <Route exact path="/staking-avax-30" render={props => <Staking30 the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[1]} {...props} />} />
-      <Route exact path="/staking-avax-60" render={props => <Staking60 the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[2]} {...props} />} />
-      <Route exact path="/staking-avax-90" render={props => <Staking90 the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[3]} {...props} />} />
+      <Route exact path="/staking-avax-3" render={props => <Staking3 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[0]} {...props} />} />
+      <Route exact path="/staking-avax-30" render={props => <Staking30 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[1]} {...props} />} />
+      <Route exact path="/staking-avax-60" render={props => <Staking60 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[2]} {...props} />} />
+      <Route exact path="/staking-avax-90" render={props => <Staking90 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} lp_id={LP_IDs.eth[3]} {...props} />} />
 
-      <Route exact path='/staking-buyback' render={props => <BuybackStaking the_graph_result={this.state.the_graph_result} {...props} />} />
+      <Route exact path='/staking-buyback' render={props => <BuybackStaking is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} {...props} />} />
 
-      <Route exact path='/vesting' render={props => <Vesting the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
-      <Route exact path='/vesting-staking' render={props => <VestingStaking the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/vesting' render={props => <Vesting is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/vesting-staking' render={props => <VestingStaking is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
-      <Route exact path='/airdrop' render={props => <VestingAirdrop the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
-      <Route exact path='/airdrop-staking' render={props => <VestingStakingAirdrop the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/airdrop' render={props => <VestingAirdrop is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/airdrop-staking' render={props => <VestingStakingAirdrop is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
       {/*Constant Staking New*/}
-      <Route exact path='/constant-staking-1' render={props => <ConstantStaking30 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
-      <Route exact path='/constant-staking-2' render={props => <ConstantStaking90 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/constant-staking-1' render={props => <ConstantStaking30 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/constant-staking-2' render={props => <ConstantStaking90 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*Constant Staking DYP -> DAI*/}
       <Route exact path='/constant-staking-3' render={props => <ConstantStakingDai the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*Buyback New*/}
-      <Route exact path='/staking-buyback-1' render={props => <BuybackStaking1 the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
-      <Route exact path='/staking-buyback-2' render={props => <BuybackStaking2 the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
+      <Route exact path='/staking-buyback-1' render={props => <BuybackStaking1 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
+      <Route exact path='/staking-buyback-2' render={props => <BuybackStaking2 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
 
       {/*Farming New*/}
-      <Route exact path='/farming-new-1' render={props => <StakingNew1 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[0]} {...props} />} />
-      <Route exact path='/farming-new-2' render={props => <StakingNew2 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[1]} {...props} />} />
-      <Route exact path='/farming-new-3' render={props => <StakingNew3 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[2]} {...props} />} />
-      <Route exact path='/farming-new-4' render={props => <StakingNew4 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[3]} {...props} />} />
-      <Route exact path='/farming-new-5' render={props => <StakingNew5 the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
+      <Route exact path='/farming-new-1' render={props => <StakingNew1 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[0]} {...props} />} />
+      <Route exact path='/farming-new-2' render={props => <StakingNew2 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[1]} {...props} />} />
+      <Route exact path='/farming-new-3' render={props => <StakingNew3 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[2]} {...props} />} />
+      <Route exact path='/farming-new-4' render={props => <StakingNew4 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[3]} {...props} />} />
+      <Route exact path='/farming-new-5' render={props => <StakingNew5 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} lp_id={LP_IDs.wavax[4]} {...props} />} />
 
-      <Route exact path='/avaxvst-private' render={props => <VestingPrivate the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/avaxvst-private' render={props => <VestingPrivate is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} referrer={this.state.referrer} {...props} />} />
 
-      <Route exact path='/staking-idyp-1' render={props => <ConstantStakingiDYP1 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
-      <Route exact path='/staking-idyp-2' render={props => <ConstantStakingiDYP2 the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/staking-idyp-1' render={props => <ConstantStakingiDYP1 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/staking-idyp-2' render={props => <ConstantStakingiDYP2 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*<Route exact path='/' render={props => <StakingList tvl_all={getFormattedNumber(this.getCombinedTvlUsd(), 2)} tvl_farming={getFormattedNumber(this.getTvlFarming(), 2)} {...props} />} />*/}
       </div>
