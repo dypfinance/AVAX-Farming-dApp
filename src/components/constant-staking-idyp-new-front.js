@@ -408,7 +408,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
-                                        <p className='h3'><b>Earn more iDYP</b></p>
+                                        <p className='h3'><b>iDYP Staking</b></p>
                                         <p>Stake your iDYP tokens and earn {this.state.apy2 == 0 ? (
                                             <Dots />
                                         ) : (
@@ -441,7 +441,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
                                     <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >iDYP pool</p>
+                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >iDYP Staking</p>
                                     </div>
                                     <div className='col-6' style={{marginBottom: '27px'}}>
                                         <div className='row'>
@@ -450,7 +450,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                         className='btn  btn-block btn-primary button' type='button'>
                                                     <img src="img/icon/bulb.svg" style={{float: 'left'}}
                                                          alt="wallet" />
-                                                    Farming info
+                                                    More info
                                                 </button>
                                             </div>
                                             <div style={{paddingLeft: '20px'}} className='col-6'>
@@ -527,7 +527,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                                          alt="wallet" />
                                                                     <label htmlFor="deposit-amount"
                                                                            style={{margin: '0px', top: '3px', position: 'relative', color: 'white'}}>
-                                                                        Avax Yield
+                                                                        Avalanche
                                                                     </label>
                                                                 </div>
                                                                 <div className="col-9">
@@ -598,7 +598,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                             </div>
                                                             <div className='row'>
                                                                 <div disabled={!is_connected} style={{paddingRight: '0.3rem'}} className='col-6'>
-                                                                    <button onClick={this.handleApprove}
+                                                                    <button disabled={!is_connected} onClick={this.handleApprove}
                                                                             className='btn  btn-block btn-primary '
                                                                             type='button'>
                                                                         APPROVE

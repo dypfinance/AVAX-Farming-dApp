@@ -176,8 +176,6 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
             window._refreshBalInterval = setInterval(this.refreshBalance, 3000)
 
             this.getPriceDYP()
-
-            this.getTotalTvl().then()
         }
 
         getTotalTvl = async () =>
@@ -389,6 +387,8 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
         refreshBalance = async () => {
             let coinbase = window.coinbase_address
             this.setState({ coinbase })
+
+            this.getTotalTvl()
 
             let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
 
@@ -655,7 +655,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
                                     <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >DYP Buyback Pool</p>
+                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >DYP Buyback</p>
                                     </div>
                                     <div className='col-6' style={{marginBottom: '27px'}}>
                                         <div className='row'>
@@ -664,7 +664,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                                         className='btn  btn-block btn-primary button' type='button'>
                                                     <img src="img/icon/bulb.svg" style={{float: 'left'}}
                                                          alt="wallet" />
-                                                    Farming info
+                                                    More info
                                                 </button>
                                             </div>
                                             <div style={{paddingLeft: '20px'}} className='col-6'>
@@ -743,7 +743,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                                                          alt="wallet" />
                                                                     <label htmlFor="deposit-amount"
                                                                            style={{margin: '0px', top: '3px', position: 'relative', color: 'white'}}>
-                                                                        Avax Yield
+                                                                        Avalanche
                                                                     </label>
                                                                 </div>
                                                                 <div className="col-9">

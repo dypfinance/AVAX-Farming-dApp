@@ -19,7 +19,8 @@ import initStakingNew from './components/staking-new-front'
 // import initConstantStakingiDYP from './components/constant-staking-idyp'
 import initConstantStakingiDYP from './components/constant-staking-idyp-new-front'
 
-import initConstantStakingDai from './components/constant-staking-dai'
+// import initConstantStakingDai from './components/constant-staking-dai'
+import initConstantStakingDai from './components/constant-staking-dai-front'
 
 import StakingList from './components/staking-list'
 import StakingListEth from './components/staking-list-eth.js'
@@ -268,7 +269,7 @@ class App extends React.Component {
 render() {
 
   return (
-    <div className="App App-header">
+    <div className="App App-header" style={{overflowX: "hidden"}}>
       <Header darkTheme={this.state.darkTheme} toggleTheme={this.toggleTheme} />
       <div style={{minHeight: '550px'}} className="App-container">
       <Route exact path="/staking-stats" render={props => <StakingStats is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result} {...props} />} />
@@ -296,7 +297,7 @@ render() {
       <Route exact path='/constant-staking-2' render={props => <ConstantStaking90 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*Constant Staking DYP -> DAI*/}
-      <Route exact path='/constant-staking-3' render={props => <ConstantStakingDai the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/constant-staking-3' render={props => <ConstantStakingDai is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*Buyback New*/}
       <Route exact path='/staking-buyback-1' render={props => <BuybackStaking1 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
