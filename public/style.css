@@ -297,8 +297,29 @@ Medium Screen - Others
 ====================================
 */
 
+    @media screen and (min-width: 1201px) {
+
+        .header-title-text{
+            font-size: 42px;
+            line-height: 55px;
+            max-height: 55px;
+            margin-top: 35px;
+            margin-bottom: 50px;
+        }
+
+    }
+
     
     @media screen and (min-width: 992px) and (max-width: 1200px) {
+
+        .header-title-text{
+            font-size: 42px;
+            line-height: 55px;
+            max-height: 55px;
+            margin-top: 35px;
+            margin-bottom: 50px;
+        }
+
         .footer-nav ul li a {
             font-size: 17px;
         }
@@ -310,6 +331,14 @@ Medium Screen - Others
     ====================================
     */
     @media screen and (min-width: 768px) and (max-width: 991px) {
+
+        .header-title-text{
+            font-size: 42px;
+            line-height: 55px;
+            max-height: 55px;
+            margin-top: 35px;
+            margin-bottom: 50px;
+        }
 
         .header-title-1{
             font-size: smaller;
@@ -341,6 +370,12 @@ Medium Screen - Others
     ====================================
     */
     @media screen and (min-width: 576px) and (max-width: 767px) {
+
+        .header-title-text {
+            font-size: 24px !important;
+            margin-top: 12px;
+            margin-bottom: 22px;
+        }
 
         .header-title-1 {
             font-size: 20px;
@@ -379,6 +414,12 @@ Medium Screen - Others
     ====================================
     */
     @media screen and (max-width: 576px) {
+
+        .header-title-text {
+            font-size: 24px !important;
+            margin-top: 12px;
+            margin-bottom: 22px;
+        }
 
         .popup-main {
             max-width: 100%;
@@ -467,4 +508,13 @@ Medium Screen - Others
     line-height: 15px;
     color: #FFF !important;
     z-index: 1;
+}
+
+.header-title-text {
+    width: 100%;
+    height: auto;
+    font-family: Mulish;
+    font-style: normal;
+    font-weight: 900;
+    color: rgb(255, 255, 255);
 }

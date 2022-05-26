@@ -556,23 +556,28 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                 </Popup>
                                 <Modal show={this.state.show} handleConnection={this.props.handleConnection} handleConnectionWalletConnect={this.props.handleConnectionWalletConnect} handleClose={this.hideModal} />
                                 <div className='row'>
-                                    <div className='col-12' style={{marginBottom: '30px'}}>
-                                        <p style={{width: '100%', height: 'auto', fontFamily: 'Mulish', fontStyle: 'normal', fontWeight: '900', fontSize: '42px', lineHeight: '55px', color: '#FFFFFF', marginTop: '35px', maxHeight: '55px'}} >DYP Staking</p>
+                                    <div className='col-12'>
+                                        <p className="header-title-text">DYP Staking</p>
                                     </div>
-                                    <div className='col-6' style={{marginBottom: '27px'}}>
+                                    <div className='col-7 col-md-7 col-lg-6 col-xl-5'>
                                         <div className='row'>
-                                            <div style={{paddingRight: '15px'}} className='col-6 button'>
+                                            <div className='col-9 col-md-5 mb-4'>
                                                 <button onClick={this.showPopup}
-                                                        className='btn  btn-block btn-primary button' type='button'>
+                                                        className='btn  btn-block btn-primary button'
+                                                        type='button'
+                                                        style={{maxWidth: '100%', width: '100%'}}
+                                                >
                                                     <img src="img/icon/bulb.svg" style={{float: 'left'}}
                                                          alt="wallet" />
                                                     More info
                                                 </button>
                                             </div>
-                                            <div style={{paddingLeft: '20px'}} className='col-6'>
+                                            <div className='col-11 col-md-5 mb-4'>
                                                 <button className onClick={()=> window.open("https://www.youtube.com/watch?v=s9gwo3J119U&t=5s", "_blank")}
                                                         className='btn  btn-block btn-primary l-outline-btn button'
-                                                        type='submit'>
+                                                        type='submit'
+                                                        style={{maxWidth: '100%', width: '100%'}}
+                                                >
                                                     <img src="img/icon/video.svg" style={{float: 'left'}}
                                                          alt="wallet" />
                                                     Video tutorial
@@ -585,9 +590,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                         </div>
 
                         <div className='container'>
-                            <div className='token-staking mt-5'>
-                                <div className='row'>
-
+                            <div className='token-staking mt-4'>
+                                <div className='row p-3 p-sm-0 p-md-0'>
                                     <div className="col-12">
                                         <div className='row'>
                                             <div className='col-lg-6'>
@@ -595,15 +599,15 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                     <div className="col-12">
                                                         <div className="l-box" style={{padding: '0.5rem'}}>
                                                             {is_connected ?
-                                                                <div className="row">
-                                                                    <div className="col-7" style={{marginTop: '0px'}}>
+                                                                <div className="row justify-content-center">
+                                                                    <div className="col-9 col-sm-8 col-md-7 text-center text-md-left" style={{marginTop: '0px'}}>
                                                                         <img src="img/connected.png" style={{marginRight: '10px', marginTop: '3px'}}
                                                                              alt="wallet" />
                                                                         <span htmlFor="deposit-amount" style={{margin: '0', top: '3px', position: 'relative'}}>
                                                                     Wallet has been connected
                                                                 </span>
                                                                     </div>
-                                                                    <div className="col-5 text-right">
+                                                                    <div className="col-8 col-sm-6 col-md-5 text-center">
                                                                         <div style={{marginTop: '5px', paddingRight: '15px'}}>
                                                                             <Address style={{fontFamily: 'monospace'}} a={coinbase} />
                                                                         </div>
@@ -611,15 +615,15 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                                     </div>
                                                                 </div>
                                                                 :
-                                                                <div className="row">
-                                                                    <div className="col-8" style={{marginTop: '0px'}}>
+                                                                <div className="row justify-content-center">
+                                                                    <div className="col-11 col-sm-8 col-md-8 text-center text-md-left mb-3 mb-md-0" style={{marginTop: '0px'}}>
                                                                         <img src="img/icon/wallet.svg" style={{marginRight: '10px', marginTop: '3px'}}
                                                                              alt="wallet" />
                                                                         <label htmlFor="deposit-amount" style={{margin: '0', top: '3px', position: 'relative'}}>
                                                                             Please connect wallet to use this dApp
                                                                         </label>
                                                                     </div>
-                                                                    <div className="col-4">
+                                                                    <div className="col-10 col-md-4 mb-3 mb-md-0">
                                                                         <button type="submit" onClick={this.showModal} className="btn  btn-block btn-primary l-outline-btn">
                                                                             Connect Wallet
                                                                         </button>
@@ -637,31 +641,26 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                         <div className="" style={{background: 'linear-gradient(257.76deg, #E84142 6.29%, #CB2627 93.71%)',
                                                             boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.06)', borderRadius: '6px', paddingLeft: '5px', padding: '10px'}}>
                                                             <div className="row">
-                                                                <div style={{marginTop: '0px', paddingLeft: ''}} className='col-3'>
+                                                                <div style={{marginTop: '0px', paddingLeft: ''}} className='col-4 col-sm-4 col-md-3 mb-3 mb-md-0 pr-0'>
                                                                     <img src="img/icon/avax.svg"
-                                                                         style={{marginRight: '10px', marginTop: '5px'}}
+                                                                         style={{marginRight: '4px', marginTop: '5px'}}
                                                                          alt="wallet" />
                                                                     <label htmlFor="deposit-amount"
                                                                            style={{margin: '0px', top: '3px', position: 'relative', color: 'white'}}>
                                                                         Avalanche
                                                                     </label>
                                                                 </div>
-                                                                <div className="col-9">
-                                                                    <div className='row' >
-                                                                        <div className='col-6' style={{margin : '0px', padding: '0px'}}>
-                                                                            <div className='test'>
-                                                                                <div className='tvl_test'>
-                                                                                    TVL USD <span className='testNumber'>$ {tvl_usd} </span>
-                                                                                </div>
-                                                                            </div>
+                                                                <div className='col-8 col-sm-6 col-md-5 mb-3 mb-md-0 pr-2'>
+                                                                    <div className='test'>
+                                                                        <div className='tvl_test'>
+                                                                            TVL USD <span className='testNumber'>$ {tvl_usd} </span>
                                                                         </div>
-
-                                                                        <div className='col-5' style={{marginLeft : '10px', padding: '0px'}}>
-                                                                            <div className='test'>
-                                                                                <div className='tvl_test'>
-                                                                                    APR <span className='testNumber'> <img src='img/icon/vector.svg' /> {getFormattedNumber(this.state.apy, 2)}% </span>
-                                                                                </div>
-                                                                            </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className='col-6 col-sm-4 col-md-4 mb-1 mb-md-0'>
+                                                                    <div className='test'>
+                                                                        <div className='tvl_test'>
+                                                                            APR <span className='testNumber'> <img src='img/icon/vector.svg' /> {getFormattedNumber(this.state.apy, 2)}% </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
