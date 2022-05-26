@@ -380,6 +380,12 @@ Medium Screen - Others
     */
     @media screen and (max-width: 576px) {
 
+        .popup-main {
+            max-width: 100%;
+            width: 90%;
+            overflow: auto;
+        }
+
         .modal-main {
             max-width: 100%;
             width: 90%
