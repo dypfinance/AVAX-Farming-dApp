@@ -838,7 +838,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                                             <div className='col-lg-6'>
                                                 <div className='row token-staking-form'>
                                                     <div className="col-12">
-                                                        <div className="l-box" style={{padding: '0.5rem'}}>
+                                                        <div className="l-box">
                                                             {is_connected ?
                                                                 <div className="row justify-content-center">
                                                                     <div className="col-9 col-sm-8 col-md-7 text-center text-md-left" style={{marginTop: '0px'}}>
