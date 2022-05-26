@@ -76,7 +76,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                 depositAmount: '',
                 withdrawAmount: '',
 
-                coinbase: '',
+                coinbase: '0x0000000000000000000000000000000000000111',
                 tvl: '',
                 referralFeeEarned: '',
                 stakingOwner: null,
@@ -254,8 +254,12 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
         }
 
         refreshBalance = async () => {
-            let coinbase = window.coinbase_address
-            this.setState({ coinbase })
+            let coinbase = this.state.coinbase
+
+            if (window.coinbase_address){
+                coinbase = window.coinbase_address
+                this.setState({ coinbase })
+            }
 
             let lp_data = this.props.the_graph_result.token_data
             //console.log({lp_data})
@@ -457,12 +461,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
             //this.setState({apy})
 
-            let is_connected = false
-
-            if(coinbase !== "0x0000000000000000000000000000000000000111")
-            {
-                is_connected = true
-            }
+            let is_connected = this.props.is_wallet_connected
 
             return (<div>
 
@@ -473,15 +472,14 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                             <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                 <div className="earn-hero-content p4token-wrapper">
                                     <p className='h3'><b>DYP Staking</b></p>
-                                    <p>Stake your DYP tokens and earn 25% APR in AVAX. No Impermanent Loss.</p>
+                                    <p>Stake your DYP tokens and earn 25% APR in AVAX with no Impermanent Loss.</p>
                                     <p>To start earning, all you need is to deposit DYP tokens into the
                                         Staking contract and earn AVAX as rewards.</p>
                                     <p>The staking pools have the REINVEST function integrated, meaning that
                                         you can automatically add your daily rewards to the staking pool.
                                         Moreover, the DYP Referral is available. If you refer DYP to your
                                         friends, 5% of your friends’ rewards will automatically be sent to
-                                        you whenever your friends stake DYP. You do not need to stake, it
-                                        will’ be automatically sent to you, free of gas fee.</p>
+                                        you whenever they stake DYP.</p>
                                 </div>
 
                             </Popup>

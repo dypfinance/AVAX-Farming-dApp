@@ -78,7 +78,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                 depositAmount: '',
                 withdrawAmount: '',
 
-                coinbase: '',
+                coinbase: '0x0000000000000000000000000000000000000111',
                 tvl: '',
                 referralFeeEarned: '',
                 stakingOwner: null,
@@ -303,8 +303,12 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
         }
 
         refreshBalance = async () => {
-            let coinbase = window.coinbase_address
-            this.setState({ coinbase })
+            let coinbase = this.state.coinbase
+
+            if (window.coinbase_address){
+                coinbase = window.coinbase_address
+                this.setState({ coinbase })
+            }
 
             this.getTotalTvl()
 
@@ -508,16 +512,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
             let id = Math.random().toString(36)
 
 
-            let is_connected = false
-
-            if(coinbase !== "0x0000000000000000000000000000000000000111")
-            {
-                is_connected = true
-            }
-
-
-
-
+            let is_connected = this.props.is_wallet_connected
 
             // let apy = new BigNumber(apr).div(1e2).times(usd_per_idyp).div(usd_per_token).times(1e2).toFixed(2)
 
@@ -536,7 +531,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                         ) : (
                                             getFormattedNumber(this.state.apy2,0)
                                         )
-                                        }% APR. No Impermanent Loss.</p>
+                                        }% APR with no Impermanent Loss.</p>
                                         <p>To start earning, all you need is to deposit DYP tokens into the Staking
                                             contract. You can choose from two different staking options, with
                                             rewards starting from {this.state.apy1 == 0 ? (
@@ -554,9 +549,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                         <p>The staking pools have the REINVEST function integrated, meaning that
                                             you can automatically add your daily rewards to the staking pool.
                                             Moreover, the DYP Referral is available. If you refer DYP to your
-                                            friends, 5% of your friends’ rewards will automatically be sent to you
-                                            whenever your friends stake DYP. You do not need to stake, it will’ be
-                                            automatically sent to you, free of gas fee.</p>
+                                            friends, 5% of your friends’ rewards will automatically be sent to
+                                            you whenever they stake DYP.</p>
                                     </div>
 
                                 </Popup>

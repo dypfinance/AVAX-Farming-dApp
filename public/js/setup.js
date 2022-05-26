@@ -2893,7 +2893,7 @@ Object.keys(window.config).filter(k => (k.startsWith('token_') ||
 
 window.avaxweb3 = new Web3('https://api.avax.network/ext/bc/C/rpc')
 
-window.coinbase_address = '0x0000000000000000000000000000000000000111'
+// window.coinbase_address = '0x0000000000000000000000000000000000000111'
 
 // function to connect metamask
 async function connectWallet(provider, walletType) {
@@ -2940,18 +2940,27 @@ function param(name) {
 }
 window.param = param
 
+window.cached_contracts_connected = {}
 /**
  *
  * @param {"TOKEN" | "STAKING"} key
  */
 async function getContract(key) {
-    let ABI = window[key+'_ABI']
-    let address = window.config[key.toLowerCase()+'_address']
-    if (!window.cached_contracts[key]) {
-        window.cached_contracts[key] = new window.avaxweb3.eth.Contract(ABI, address, {from: await getCoinbase()})
-    }
+	let ABI = window[key+'_ABI']
+	let address = window.config[key.toLowerCase()+'_address']
 
-    return window.cached_contracts[key]
+	if (!window.cached_contracts_connected[key]) {
+		window.cached_contracts_connected[key] = new window.avaxweb3.eth.Contract(ABI, address, {from: await getCoinbase()})
+	}
+
+	if(!window.IS_CONNECTED)
+		return window.cached_contracts_connected[key]
+
+	if (!window.cached_contracts[key]) {
+		window.cached_contracts[key] = new window.web3.eth.Contract(ABI, address, {from: await getCoinbase()})
+	}
+
+	return window.cached_contracts[key]
 }
 
 function getCoinbase() {

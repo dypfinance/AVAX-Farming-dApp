@@ -78,7 +78,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                 depositAmount: '',
                 withdrawAmount: '',
 
-                coinbase: '',
+                coinbase: '0x0000000000000000000000000000000000000111',
                 tvl: '',
                 referralFeeEarned: '',
                 stakingOwner: null,
@@ -232,9 +232,12 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
         }
 
         refreshBalance = async () => {
-            let coinbase = window.coinbase_address
-            this.setState({ coinbase })
-            console.log(true)
+            let coinbase = this.state.coinbase
+
+            if (window.coinbase_address){
+                coinbase = window.coinbase_address
+                this.setState({ coinbase })
+            }
 
             let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
 
@@ -381,12 +384,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
             let id = Math.random().toString(36)
 
-            let is_connected = false
-
-            if(coinbase !== "0x0000000000000000000000000000000000000111")
-            {
-                is_connected = true
-            }
+            let is_connected = this.props.is_wallet_connected
 
             let infoItems = [
                 "75% from your deposit is added to PancakeSwap V2 BNB/iDYP LP",
@@ -414,7 +412,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                         ) : (
                                             getFormattedNumber(this.state.apy2,0)
                                         )
-                                        }% APR. No Impermanent Loss.</p>
+                                        }% APR with no Impermanent Loss.</p>
                                         <p>To start earning, all you need is to deposit iDYP tokens into the Staking
                                             contract. You can choose from two different staking options, with
                                             rewards starting from {this.state.apy1 == 0 ? (
@@ -432,9 +430,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                         <p>The staking pools have the REINVEST function integrated, meaning that
                                             you can automatically add your daily rewards to the staking pool.
                                             Moreover, the iDYP Referral is available. If you refer iDYP to your
-                                            friends, 5% of your friends’ rewards will automatically be sent to you
-                                            whenever your friends stake iDYP. You do not need to stake, it will’ be
-                                            automatically sent to you, free of gas fee.</p>
+                                            friends, 5% of your friends’ rewards will automatically be sent to
+                                            you whenever they stake iDYP.</p>
                                     </div>
 
                                 </Popup>

@@ -78,7 +78,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                 depositAmount: '',
                 withdrawAmount: 0,
 
-                coinbase: '',
+                coinbase: '0x0000000000000000000000000000000000000111',
                 tvl: '',
                 stakingOwner: null,
                 approxDeposit: 100 ,
@@ -385,8 +385,12 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
         }
 
         refreshBalance = async () => {
-            let coinbase = window.coinbase_address
-            this.setState({ coinbase })
+            let coinbase = this.state.coinbase
+
+            if (window.coinbase_address){
+                coinbase = window.coinbase_address
+                this.setState({ coinbase })
+            }
 
             this.getTotalTvl()
 
@@ -597,12 +601,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
 
             let id = Math.random().toString(36)
 
-            let is_connected = false
-
-            if(coinbase !== "0x0000000000000000000000000000000000000111")
-            {
-                is_connected = true
-            }
+            let is_connected = this.props.is_wallet_connected
 
             let infoItems = [
                 "75% from your deposit is added to PancakeSwap V2 BNB/iDYP LP",
