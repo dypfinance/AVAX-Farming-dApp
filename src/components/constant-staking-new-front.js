@@ -521,7 +521,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
             return (<div>
 
                     <div className='row'>
-                        <div className="col-12" style={{background: 'url(img/banner/dyp_farming-21.svg)', backgroundSize: 'cover', resize: 'both'}}>
+                        <div className="col-12 header-image-staking-new">
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">

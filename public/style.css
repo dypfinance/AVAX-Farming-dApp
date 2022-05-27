@@ -415,6 +415,22 @@ Medium Screen - Others
     */
     @media screen and (max-width: 576px) {
 
+
+        .header-image-farming-new{
+            background: url('img/banner/mobile/dyp_farming banners_vector-24.svg') !important;
+            background-size: cover !important;
+        }
+
+        .header-image-staking-new{
+            background: url('img/banner/mobile/dyp_stake_mobile-18.svg') !important;
+            background-size: cover !important;
+        }
+
+        .header-image-buyback-new{
+            background: url('img/banner/mobile/dyp_buyback_mob-14.svg') !important;
+            background-size: cover !important;
+        }
+
         .header-title-text {
             font-size: 24px !important;
             margin-top: 12px;
@@ -517,4 +533,22 @@ Medium Screen - Others
     font-style: normal;
     font-weight: 900;
     color: rgb(255, 255, 255);
+}
+
+.header-image-farming-new{
+    background: url(img/banner/dyp_farming-21.svg);
+    background-size: cover;
+    resize: both;
+}
+
+.header-image-staking-new{
+    background: url(img/banner/dyp_farming-21.svg);
+    background-size: cover;
+    resize: both;
+}
+
+.header-image-buyback-new{
+    background: url(img/banner/dyp_buyback_desk-11_avax.svg);
+    background-size: cover;
+    resize: both;
 }

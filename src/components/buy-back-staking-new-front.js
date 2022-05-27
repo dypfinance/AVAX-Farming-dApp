@@ -618,7 +618,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
             return (<div>
 
                     <div className='row'>
-                        <div className="col-12" style={{background: 'url(img/banner/dyp_buyback_desk-11_avax.svg)', backgroundSize: 'cover', resize: 'both'}}>
+                        <div className="col-12 header-image-buyback-new">
                             <div className="container">
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
