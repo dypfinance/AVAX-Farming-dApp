@@ -66,9 +66,9 @@ export default class Header extends React.Component {
             <div className="col-md-7 logo-column header-logo col-5">
               <h2  className='container text-left' style={{position: 'relative', maxWidth: '100%', marginLeft: '-10px' }}>
                 <a href='/' style={{ display: 'flex' }}>
-                  <img className='wlogo' style={{position: 'relative', maxWidth: '90%', objectFit: 'contain', paddingRight: '10px', height: '75px'}} alt='Staking DAPP' src='/logo192.png'
+                  <img className='wlogo' style={{position: 'relative', maxWidth: '90%', objectFit: 'contain', paddingRight: '10px', height: '75px'}} alt='Staking DAPP' src='/img/svg/logo.svg'
                        height='125'/>
-                  <img className='d-none dlogo' style={{position: 'relative', maxWidth: '90%', objectFit: 'contain', paddingRight: '10px', height: '75px'}} alt='Staking DAPP' src='/img/dlogo.svg'
+                  <img className='d-none dlogo' style={{position: 'relative', maxWidth: '90%', objectFit: 'contain', paddingRight: '10px', height: '75px'}} alt='Staking DAPP' src='/img/svg/logo.svg'
                        height='125'/>
                   {/*{' '}<p className="header-title-1" style={{ paddingLeft: '10px', marginTop: 'auto' }}>yield AVAX</p>*/}
                   {' '}<div className="header-title-1" style={{ paddingLeft: '25px', marginTop: 'auto' }}>
