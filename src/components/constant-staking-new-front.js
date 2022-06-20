@@ -323,7 +323,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
             this.setState({apy})
 
-            let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
+            // let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
+            let usd_per_dyps = 0
 
             try {
                 let amount = new BigNumber(1000000000000000000).toFixed(0)
