@@ -36,6 +36,15 @@ export default function Modal ({ handleClose, show, handleConnection, handleConn
                                             <img src="/img/wallets/metamask.svg" alt="Icon" />
                                         </div>
                                     </button>
+                                    <button onClick={handleConnection} id="connect-METAMASK"
+                                            className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
+                                        <div className="sc-jbKcbu GeCum">
+                                            <div color="#E8831D" className="sc-bbmXgH eDNUCi">Coinbase Wallet</div>
+                                        </div>
+                                        <div className="sc-jnlKLf gJPfsC">
+                                            <img src="/img/wallets/coinbase.png" alt="Icon" />
+                                        </div>
+                                    </button>
                                     <button onClick={handleConnectionWalletConnect} id="connect-WALLETCONNECT"
                                             className="sc-kvZOFW sc-hqyNC sc-dNLxif fJOgmn">
                                         <div className="sc-jbKcbu GeCum">
