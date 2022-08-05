@@ -432,7 +432,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
                                         <p className='h3'><b>DYP Staking</b></p>
-                                        <p>Stake your DYP tokens and earn 30% APR with no Impermanent Loss.</p>
+                                        <p>Stake your DYP tokens and earn {apr}% APR with no Impermanent Loss.</p>
                                         <p>To start earning, all you need is to deposit DYP tokens into the
                                             Staking contract and earn DYP as rewards.</p>
                                         <p>The staking pools have the REINVEST function integrated, meaning

@@ -175,7 +175,8 @@ window.config = {
 	reward_token_dai_address: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
 
 	//Constant Staking DYP -> DYP 30%
-	constant_stakingidyp_3_address: '0xF035ec2562fbc4963e8c1c63f5c473D9696c59E3'
+	constant_stakingidyp_3_address: '0xF035ec2562fbc4963e8c1c63f5c473D9696c59E3',
+	constant_stakingidyp_4_address: '0xb1875eeBbcF4456188968f439896053809698a8B'
 }
 
 // add buyback supported deposit tokens here, lowercase
@@ -3346,6 +3347,7 @@ window.constant_stakingdai = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGDAI")
 
 //Constant staking DYP -> DYP 30%
 window.constant_staking_new10 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_3")
+window.constant_staking_new11 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_4")
 
 /* Farming New */
 window.token_new = new TOKEN("TOKEN_NEW")

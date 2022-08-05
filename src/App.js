@@ -68,6 +68,7 @@ const ConstantStakingDai = initConstantStakingDai({ staking: window.constant_sta
 
 //Constant Staking NEW DYP -> DYP
 const ConstantStakingDYP = initConstantStakingDYP({ staking: window.constant_staking_new10, apr: 30, liquidity: avax_address, expiration_time: '14 July 2023', other_info: false })
+const ConstantStakingDYP10APR = initConstantStakingDYP({ staking: window.constant_staking_new11, apr: 10, liquidity: avax_address, expiration_time: '05 August 2023', other_info: false })
 
 //Buyback New
 const BuybackStaking1 = initBuybackStakingNew({ staking: window.buyback_staking1_1, constant: window.constant_staking_new3, apr: 30, expiration_time: '6 December 2022' })
@@ -306,6 +307,7 @@ render() {
 
       {/*Constant Staking DYP -> DYP 30%*/}
       <Route exact path='/constant-staking-180' render={props => <ConstantStakingDYP is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
+      <Route exact path='/constant-staking-30' render={props => <ConstantStakingDYP10APR is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} referrer={this.state.referrer} {...props} />} />
 
       {/*Buyback New*/}
       <Route exact path='/staking-buyback-1' render={props => <BuybackStaking1 is_wallet_connected={this.state.is_wallet_connected} handleConnection={this.handleConnection} handleConnectionWalletConnect={this.handleConnectionWalletConnect} the_graph_result={this.state.the_graph_result_AVAX_V2} {...props} />} />
