@@ -12,7 +12,7 @@ import {Button} from "@material-ui/core";
 import Modal from "./modal";
 import Dots from "./elements/dots";
 
-export default function initStaking({ staking, constant, apr, lock, expiration_time }) {
+export default function initStaking({ staking, constant, apr, lock, expiration_time, fee }) {
 
     let { reward_token, BigNumber, alertify, reward_token_idyp, token_dyps } = window
     let token_symbol = 'DYP'
@@ -186,11 +186,11 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
             let usd_per_idyp = this.props.the_graph_result.token_data ? this.props.the_graph_result.token_data["0xbd100d061e120b2c67a24453cf6368e63f1be056"].token_price_usd : 1
 
             //apr is 30%
-            let apy1_buyback1 = new BigNumber(0.225)
+            let apy1_buyback1 = new BigNumber(0.225).minus(fee/100)
             let apy2_buyback1 = new BigNumber(0.25).div(usd_per_token).times(30).div(1e2).times(usd_per_idyp)
 
             // APR is 100% considering 1$ as initial investment, 0.75$ goes to Buyback
-            let apy1_buyback2 = new BigNumber(0.75)
+            let apy1_buyback2 = new BigNumber(0.75).minus(fee/100)
             let apy2_buyback2 = new BigNumber(0.25).div(usd_per_token).times(usd_per_idyp)
 
             let apyBuyback1 = new BigNumber(apy1_buyback1).plus(apy2_buyback1).times(1e2).toFixed(0)
@@ -505,7 +505,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
         }
 
         getApproxReturn = () => {
-            let APY = this.getAPY()
+            let APY = this.getAPY() - fee
             let approxDays = this.state.approxDays
             let approxDeposit = this.state.approxDeposit
 
@@ -595,7 +595,7 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                 // apy2 = new BigNumber(0.25).div(usd_per_token).div(2).times(usd_per_idyp)
             }
 
-            let apy = new BigNumber(apy1).plus(apy2).times(1e2).toFixed(0)
+            let apy = new BigNumber(apy1).minus(fee/100).plus(apy2).times(1e2).toFixed(0)
 
             //console.log({usd_per_idyp})
 
@@ -819,7 +819,8 @@ export default function initStaking({ staking, constant, apr, lock, expiration_t
                                                             </div>
                                                             <p style={{ fontSize: '.8rem' }} className='mt-1 text-center mb-0 text-muted mt-3'>
                                                                 {/* Some info text here.<br /> */}
-                                                                Please approve before deposit. 0% fee for deposit.
+                                                                Please approve before deposit. PERFORMANCE FEE {fee}%<br/>
+                                                                Performance fees are already subtracted from the displayed APR.
                                                             </p>
 
                                                         </form>
