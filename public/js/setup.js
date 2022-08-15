@@ -150,8 +150,8 @@ window.config = {
 	//Constant Staking iDYP
 	constant_stakingidyp_1_address: '0x8f28110325a727f70b64bffebf2b9dc94b932452',
 	constant_stakingidyp_2_address: '0x5536e02336771cfa0317d4b6a042f3c38749535e',
-	constant_stakingidyp_3_address: '0xaf411bf994da1435a3150b874395b86376c5f2d5',
-	constant_stakingidyp_4_address: '0xd13bdc0c9a9931cf959739631b1290b6bee0c018',
+	constant_stakingidyp_5_address: '0xaf411bf994da1435a3150b874395b86376c5f2d5',
+	constant_stakingidyp_6_address: '0xd13bdc0c9a9931cf959739631b1290b6bee0c018',
 
 	//reward_as_png: '0x60781c2586d68229fde47564546784ab3faca982',
 
@@ -3371,8 +3371,8 @@ window.constant_staking_new9 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGNEW_NEW
 /* Constant Staking iDYP */
 window.constant_staking_idyp_1 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_1")
 window.constant_staking_idyp_2 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_2")
-window.constant_staking_idyp_3 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_3")
-window.constant_staking_idyp_4 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_4")
+window.constant_staking_idyp_5 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_5")
+window.constant_staking_idyp_6 = new CONSTANT_STAKING_NEW("CONSTANT_STAKINGIDYP_6")
 
 /**
  * Returns the ETH USD Price, Token USD Prices, LP USD Prices, and amount of LP Staked, usd value of LP staked

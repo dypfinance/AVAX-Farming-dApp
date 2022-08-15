@@ -87,8 +87,8 @@ const VestingPrivate = initVestingStaking({ staking: window.constant_staking_130
 //Constant Staking iDYP
 const ConstantStakingiDYP1 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_1, apr: 20, liquidity: avax_address, expiration_time: '28 February 2023', other_info: true, fee_s: 0, fee_u: 0.25 })
 const ConstantStakingiDYP2 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_2, apr: 45, liquidity: avax_address, expiration_time: '28 February 2023', other_info: true, fee_s: 0, fee_u: 0.25 })
-const ConstantStakingiDYP3 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_3, apr: 15, liquidity: eth_address, expiration_time: '15 August 2023', other_info: false, fee_s: 1, fee_u: 0 })
-const ConstantStakingiDYP4 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_4, apr: 30, liquidity: eth_address, expiration_time: '15 August 2023', other_info: false, fee_s: 3.5, fee_u: 0 })
+const ConstantStakingiDYP3 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_5, apr: 15, liquidity: eth_address, expiration_time: '15 August 2023', other_info: false, fee_s: 1, fee_u: 0 })
+const ConstantStakingiDYP4 = initConstantStakingiDYP({ staking: window.constant_staking_idyp_6, apr: 30, liquidity: eth_address, expiration_time: '15 August 2023', other_info: false, fee_s: 3.5, fee_u: 0 })
 
 
 const Modal = ({ handleClose, show, children }) => {
