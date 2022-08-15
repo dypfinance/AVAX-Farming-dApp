@@ -168,7 +168,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
             let apy1 = 15
 
-            let apy2 = 20
+            let apy2 = 30
 
             this.setState({apy1, apy2})
 
