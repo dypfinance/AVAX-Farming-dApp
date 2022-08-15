@@ -12,7 +12,7 @@ import {Button} from "@material-ui/core";
 import Modal from "./modal";
 import Dots from "./elements/dots";
 
-export default function initStaking({ staking, apr, liquidity='ETH', lock, expiration_time }) {
+export default function initStaking({ staking, apr, liquidity='ETH', lock, expiration_time, other_info, fee_s, fee_u }) {
 
     let { reward_token_idyp, BigNumber, alertify, token_dyps } = window
     let token_symbol = 'iDYP'
@@ -166,9 +166,9 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
         getTotalTvl = async () => {
 
-            let apy1 = 20
+            let apy1 = 15
 
-            let apy2 = 45
+            let apy2 = 20
 
             this.setState({apy1, apy2})
 
@@ -187,11 +187,23 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
 
         handleApprove = (e) => {
             e.preventDefault()
+
+            if(other_info){
+                window.$.alert('This pool no longer accepts deposits!')
+                return;
+            }
+
             let amount = this.state.depositAmount
             amount = new BigNumber(amount).times(1e18).toFixed(0)
             reward_token.approve(staking._address, amount)
         }
         handleStake = (e) => {
+
+            if(other_info){
+                window.$.alert('This pool no longer accepts deposits!')
+                return;
+            }
+
             let amount = this.state.depositAmount
             amount = new BigNumber(amount).times(1e18).toFixed(0)
             let referrer = this.props.referrer
@@ -305,7 +317,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
         }
 
         getApproxReturn = () => {
-            let APY = this.getAPY()
+            let APY = this.getAPY() - fee_s
             let approxDays = this.state.approxDays
             let approxDeposit = this.state.approxDeposit
 
@@ -408,10 +420,10 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                 <Popup show={this.state.popup} handleClose={this.hidePopup} >
                                     <div className="earn-hero-content p4token-wrapper">
                                         <p className='h3'><b>iDYP Staking</b></p>
-                                        <p>Stake your iDYP tokens and earn {this.state.apy2 == 0 ? (
+                                        <p>Stake your iDYP tokens and earn {apr == 0 ? (
                                             <Dots />
                                         ) : (
-                                            getFormattedNumber(this.state.apy2,0)
+                                            getFormattedNumber(apr-fee_s,0)
                                         )
                                         }% APR with no Impermanent Loss.</p>
                                         <p>To start earning, all you need is to deposit iDYP tokens into the Staking
@@ -542,7 +554,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                                 <div className='col-6 col-sm-4 col-md-4 mb-1 mb-md-0'>
                                                                     <div className='test'>
                                                                         <div className='tvl_test'>
-                                                                            APR <span className='testNumber'> <img src='img/icon/vector.svg' /> {getFormattedNumber(apr, 2)}% </span>
+                                                                            APR <span className='testNumber'> <img src='img/icon/vector.svg' /> {getFormattedNumber(apr-fee_s, 2)}% </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -612,7 +624,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                             <p style={{fontSize: '.8rem'}}
                                                                className='mt-1 text-center mb-0 text-muted mt-3'>
                                                                 {/* Some info text here.<br /> */}
-                                                                Please approve before staking. 0% fee for deposit.
+                                                                Please approve before staking. PERFORMANCE FEE {fee_s}%<br />
+                                                                Performance fees are already subtracted from the displayed APR.
                                                             </p>
 
                                                         </form>
@@ -650,7 +663,7 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
                                                         <button title={canWithdraw ? '' : `You recently staked, you can unstake ${cliffTimeInWords}`} disabled={!canWithdraw || !is_connected} className='btn  btn-primary btn-block l-outline-btn' type='submit'>
                                                             WITHDRAW
                                                         </button>
-                                                        <p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted mt-3'>0.25% fee for withdraw</p>
+                                                        <p style={{fontSize: '.8rem'}} className='mt-1 text-center text-muted mt-3'>{fee_u}% fee for withdraw</p>
                                                     </form>
                                                 </div>
                                             </div>
