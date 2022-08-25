@@ -64,7 +64,7 @@ const ConstantStaking30 = initConstantStaking({ staking: window.constant_staking
 const ConstantStaking90 = initConstantStaking({ staking: window.constant_staking_new2, apr: 50, liquidity: avax_address, expiration_time: '6 December 2022', fee: 0.5 })
 
 //Constant Staking NEW DYP -> DAI
-const ConstantStakingDai = initConstantStakingDai({ staking: window.constant_stakingdai, apr: 25, liquidity: avax_address, expiration_time: '10 May 2023', other_info: true })
+const ConstantStakingDai = initConstantStakingDai({ staking: window.constant_stakingdai, apr: 25, liquidity: avax_address, expiration_time: 'Expired', other_info: true })
 
 //Constant Staking NEW DYP -> DYP
 const ConstantStakingDYP = initConstantStakingDYP({ staking: window.constant_staking_new10, apr: 30, liquidity: avax_address, expiration_time: '14 July 2023', other_info: false, fee: 3.5 })
