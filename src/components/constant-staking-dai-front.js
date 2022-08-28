@@ -233,7 +233,8 @@ export default function initStaking({ staking, apr, liquidity='ETH', lock, expir
             e.preventDefault()
 
             if (this.state.stakingTime != 0 && (Date.now() - this.state.stakingTime >= this.state.cliffTime)) {
-                window.$.alert('Contract Expired! Your lock time ended so please withdraw your funds and move to a new pool.')
+                window.$.alert('Contract Expired! Your lock time ended so please withdraw your funds and move to a ' +
+                    'new pool. Any unclaimed rewards will be automatically distributed to your wallet within 24 hours!')
                 return;
             }
 
