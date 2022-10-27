@@ -471,7 +471,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
 
             let lp_data = this.props.the_graph_result.lp_data
 
-            let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
+            // let usd_per_dyps = this.props.the_graph_result.price_DYPS ? this.props.the_graph_result.price_DYPS : 1
+            let usd_per_dyps = 0.00001
 
             try {
                 let amount = new BigNumber(1000000000000000000).toFixed(0)
@@ -515,7 +516,7 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                     _pendingDivsStaking, _tvlDYPS])
 
 
-                let tvlValueConstantDYP = new BigNumber(depositedTokensDYP).times(this.state.usdPerToken).toFixed(18)
+                let tvlValueConstantDYP = new BigNumber(tvlConstantDYP).times(this.state.usdPerToken).toFixed(18)
                 let tvlValueiDYP = new BigNumber(tvlConstantiDYP).times(_amountOutMin).toFixed(18)
                 let tvlValueiDYPFarming = new BigNumber(tvliDYP).times(_amountOutMin).toFixed(18)
                 let usd_per_lp = lp_data ? lp_data[this.props.lp_id].usd_per_lp : 0
@@ -530,8 +531,8 @@ export default function initStakingNew({token, staking, constant, liquidity, lp_
                 // let tvlUSD = new BigNumber(tvl).times(usd_per_lp).plus(tvlValueiDYP).toFixed(18)
 
                 /* USD VALUE OF TOTAL LP DEPOSITED */
-                // let tvlUSD = new BigNumber(tvl).times(usd_per_lp).toFixed(18)
-                let tvlUSD = new BigNumber(tvl).toFixed(18)
+                let tvlUSD = new BigNumber(tvl).times(usd_per_lp).toFixed(18)
+                // let tvlUSD = new BigNumber(tvl).toFixed(18)
 
                 let totalValueLocked = new BigNumber(tvlUSD).plus(tvlValueiDYP).plus(tvlValueiDYPFarming).plus(tvlValueConstantDYP).toFixed(18)
                 //console.log({tvlValueConstantDYP})
